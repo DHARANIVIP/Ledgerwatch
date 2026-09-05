@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Radio, Play, Pause, AlertTriangle, ShieldAlert, Activity, Zap, RefreshCw, Eye } from 'lucide-react'
 
-const API = import.meta.env.VITE_API_URL || ''
+const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 export default function LiveWireSurveillance({ onInvestigateCustomer }) {
   const [isRunning, setIsRunning] = useState(true)

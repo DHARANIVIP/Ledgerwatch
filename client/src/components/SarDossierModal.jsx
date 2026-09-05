@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Printer, Copy, Check, X, Shield, FileCheck, Hash } from 'lucide-react'
 
-const API = import.meta.env.VITE_API_URL || ''
+const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 export default function SarDossierModal({ customerId, onClose }) {
   const [dossier, setDossier] = useState(null)

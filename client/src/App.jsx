@@ -5,7 +5,7 @@ import ReportView          from './components/ReportView.jsx'
 import LiveWireSurveillance from './components/LiveWireSurveillance.jsx'
 import StatementImporter   from './components/StatementImporter.jsx'
 
-const API = import.meta.env.VITE_API_URL || ''
+const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 export default function App() {
   // Navigation mode: 'desk' | 'live' | 'importer'

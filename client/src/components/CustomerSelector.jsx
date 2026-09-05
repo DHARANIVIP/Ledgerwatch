@@ -5,7 +5,7 @@ import {
   Activity, Clock, FileCheck, Layers
 } from 'lucide-react'
 
-const API = import.meta.env.VITE_API_URL || ''
+const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 const FALLBACK_CUSTOMERS = [
   { customer_id: 'customer_A', display_name: 'Customer A — Clean Baseline', profile_type: 'clean' },

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { UploadCloud, FileText, CheckCircle, AlertCircle, ArrowRight, Sparkles } from 'lucide-react'
 
-const API = import.meta.env.VITE_API_URL || ''
+const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 // Pre-packaged realistic sample statement for instant 1-click testing
 const SAMPLE_STATEMENT_CSV = `transaction_id,date,time,description,payee,amount,channel
