@@ -813,3 +813,64 @@ a {
   margin-bottom: var(--space-5);
   font-weight: 600;
 }
+
+/* ── Enhanced Tab & Filter States ── */
+.report-tab {
+  transition: all 0.15s ease;
+}
+.report-tab:hover {
+  color: var(--text-primary) !important;
+  background: var(--border-light) !important;
+  border-radius: var(--radius-sm);
+}
+
+.active-filter {
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Print Styles for SAR Dossier ── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .sar-dossier-print-container, .sar-dossier-print-container * {
+    visibility: visible;
+  }
+  .sar-dossier-print-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000000 !important;
+    background: #FFFFFF !important;
+  }
+  .sar-modal-content {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+  .app-header, .btn-primary, .btn-ghost, button {
+    display: none !important;
+  }
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 768px) {
+  .app-header-inner {
+    height: auto;
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+  nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .diurnal-radar-card > div {
+    grid-template-columns: 1fr !important;
+  }
+}
+

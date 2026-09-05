@@ -18,7 +18,7 @@ import os
 
 import uvicorn
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -32,10 +32,10 @@ async def lifespan(app: FastAPI):
     from server.seed_database import seed
     create_tables()
     if not is_seeded():
-        print("[startup] Database is empty — running auto-seed from CSVs...")
+        print("[startup] Database is empty - running auto-seed from CSVs...")
         seed()
     else:
-        print("[startup] Database already seeded — skipping.")
+        print("[startup] Database already seeded - skipping.")
     yield   # app runs here
 
 
@@ -58,18 +58,79 @@ app.add_middleware(
 )
 
 # ---------------------------------------------------------------------------
-# Valid customer IDs (single source of truth)
+# Customer validation (dynamic DB check)
 # ---------------------------------------------------------------------------
-VALID_CUSTOMERS = {"customer_A", "customer_B", "customer_C", "customer_D"}
-
-
 def _validate_customer(customer_id: str) -> None:
-    if customer_id not in VALID_CUSTOMERS:
+    from server.repository import get_customer
+    cust = get_customer(customer_id)
+    if not cust:
         raise HTTPException(
             status_code=404,
-            detail=f"Unknown customer '{customer_id}'. "
-                   f"Valid IDs: {sorted(VALID_CUSTOMERS)}",
+            detail=f"Unknown customer '{customer_id}'. No record in database.",
         )
+
+
+# ---------------------------------------------------------------------------
+# API: Universal Statement Ingestion
+# ---------------------------------------------------------------------------
+@app.post("/api/ingest/statement", tags=["ingestion"])
+async def ingest_statement(
+    file: UploadFile = File(...),
+    customer_name: str = Form(""),
+):
+    """
+    Universal CSV bank statement parser and investigator.
+    Ingests statements from arbitrary banking formats, normalizes schema,
+    stores records in SQLite, and immediately runs full risk evaluation.
+    """
+    from server.statement_ingest import parse_and_ingest_statement
+    try:
+        content = await file.read()
+        result = parse_and_ingest_statement(
+            content=content,
+            filename=file.filename or "statement.csv",
+            custom_name=customer_name,
+        )
+        return result
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Statement processing error: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# API: Real-Time Live Wire Streaming Telemetry
+# ---------------------------------------------------------------------------
+@app.get("/api/stream/events", tags=["streaming"])
+def stream_event(
+    customer_id: str = Query("customer_B"),
+    anomaly: bool = Query(False),
+):
+    """
+    Generates real-time streaming transaction telemetry packet with instant
+    risk evaluation and rolling velocity metrics for Live Wire Surveillance.
+    """
+    from server.stream_engine import generate_live_event
+    return generate_live_event(customer_id=customer_id, force_anomaly=anomaly)
+
+
+# ---------------------------------------------------------------------------
+# API: Official Regulatory SAR Dossier Export
+# ---------------------------------------------------------------------------
+@app.get("/api/reports/sar/{customer_id}", tags=["compliance"])
+def export_sar_dossier(customer_id: str):
+    """
+    Assembles an official FinCEN / FIU compliant Suspicious Activity Report
+    dossier complete with cryptographic SHA-256 integrity hash and audit trail.
+    """
+    _validate_customer(customer_id)
+    try:
+        from server.sar_report import generate_sar_dossier
+        dossier = generate_sar_dossier(customer_id)
+        return dossier
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"SAR generation failed: {exc}")
+
 
 
 # ---------------------------------------------------------------------------

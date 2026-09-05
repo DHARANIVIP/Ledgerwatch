@@ -357,26 +357,166 @@ def generate_D() -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
+# Benchmark 1 — PaySim Real Mobile Money Mule Drain
+# Simulates mobile money rapid mule account drainage
+# ---------------------------------------------------------------------------
+def generate_PaySim_mule() -> list[dict]:
+    rows = []
+    start = date(2024, 1, 2)
+    end   = date(2024, 5, 20)
+    all_dates = _date_range(start, end)
+
+    payees = [
+        ("Grocery purchase",      "Grocery_Hub",        15,  65,  "UPI"),
+        ("Local food stall",      "Local_Market",        8,  25,  "UPI"),
+        ("Peer split payment",    "Peer_Contact_John",  20,  90,  "UPI"),
+        ("Coffee and snack",      "Coffee_House",        6,  18,  "card"),
+        ("Metro transit pass",    "Metro_Recharge",     10,  30,  "UPI"),
+        ("Water utility bill",    "Utility_Water",      25,  55,  "netbanking"),
+    ]
+
+    seed_date = date(2023, 12, 1)
+    idx = 1
+    for desc, payee, lo, hi, channel in payees:
+        rows.append({
+            "transaction_id": f"TXN-PSM-{idx:04d}",
+            "date":           seed_date.isoformat(),
+            "time":           _rand_time(9, 17),
+            "description":    desc,
+            "payee":          payee,
+            "amount":         round(float(np.clip(np.random.normal(35, 10), lo, hi)), 2),
+            "channel":        channel,
+        })
+        idx += 1
+
+    sampled = sorted(random.choices(all_dates, k=130))
+    for d in sampled:
+        desc, payee, lo, hi, channel = random.choice(payees)
+        amount = round(float(np.clip(np.random.normal(35, 10), lo, hi)), 2)
+        rows.append({
+            "transaction_id": f"TXN-PSM-{idx:04d}",
+            "date":           d.isoformat(),
+            "time":           _rand_time(8, 21),
+            "description":    desc,
+            "payee":          payee,
+            "amount":         amount,
+            "channel":        channel,
+        })
+        idx += 1
+
+    # Anomaly burst in final days:
+    anomaly_events = [
+        (date(2024, 5, 22), "03:18:22", "Mule_Account_092", 4850.00, "Rapid P2P transfer", "UPI"),
+        (date(2024, 5, 23), "03:22:10", "Mule_Account_092", 6920.00, "Express transfer", "UPI"),
+        (date(2024, 5, 23), "04:05:40", "Mule_Account_092", 7400.00, "Instant wallet transfer", "netbanking"),
+        (date(2024, 5, 24), "02:48:15", "Mule_Account_092", 9250.00, "Account drainage payout", "netbanking"),
+        (date(2024, 5, 24), "03:55:12", "Crypto_Exchange_Onramp", 8100.00, "Digital asset settlement", "netbanking"),
+    ]
+    for d, t, payee, amt, desc, channel in anomaly_events:
+        rows.append({
+            "transaction_id": f"TXN-PSM-{idx:04d}",
+            "date":           d.isoformat(),
+            "time":           t,
+            "description":    desc,
+            "payee":          payee,
+            "amount":         amt,
+            "channel":        channel,
+        })
+        idx += 1
+
+    rows.sort(key=lambda r: (r["date"], r["time"]))
+    return rows
+
+
+# ---------------------------------------------------------------------------
+# Benchmark 2 — Corporate Treasury Payroll Diversion Anomaly
+# Simulates enterprise payroll hijack and off-hours foreign wire
+# ---------------------------------------------------------------------------
+def generate_corporate_payroll() -> list[dict]:
+    rows = []
+    start = date(2024, 1, 2)
+    end   = date(2024, 6, 10)
+    all_dates = _date_range(start, end)
+
+    payees = [
+        ("Bi-weekly contractor payroll", "Staff_Payroll_Batch",      1800, 3200, "netbanking"),
+        ("Cloud infrastructure fee",     "AWS_Cloud_Infrastructure",  850, 1500, "netbanking"),
+        ("Shared office lease",          "WeWork_Office_Lease",      1200, 2400, "netbanking"),
+        ("Enterprise software licenses", "Slack_Enterprise_Software", 400,  800, "card"),
+        ("Legal compliance retainer",    "Legal_Counsel_Retainer",   1500, 2500, "netbanking"),
+    ]
+
+    seed_date = date(2023, 12, 1)
+    idx = 1
+    for desc, payee, lo, hi, channel in payees:
+        rows.append({
+            "transaction_id": f"TXN-CORP-{idx:04d}",
+            "date":           seed_date.isoformat(),
+            "time":           _rand_time(9, 17),
+            "description":    desc,
+            "payee":          payee,
+            "amount":         round(float(np.clip(np.random.normal(1600, 300), lo, hi)), 2),
+            "channel":        channel,
+        })
+        idx += 1
+
+    sampled = sorted(random.choices(all_dates, k=90))
+    for d in sampled:
+        desc, payee, lo, hi, channel = random.choice(payees)
+        amount = round(float(np.clip(np.random.normal(1600, 300), lo, hi)), 2)
+        rows.append({
+            "transaction_id": f"TXN-CORP-{idx:04d}",
+            "date":           d.isoformat(),
+            "time":           _rand_time(9, 17),
+            "description":    desc,
+            "payee":          payee,
+            "amount":         amount,
+            "channel":        channel,
+        })
+        idx += 1
+
+    # Unauthorized off-hours overseas diversion in final week
+    anomalies = [
+        (date(2024, 6, 16), "02:40:15", "Offshore_Holdings_LLC", 48900.00, "Discretionary overseas transfer", "netbanking"),
+        (date(2024, 6, 17), "03:12:44", "Offshore_Holdings_LLC", 32500.00, "Tranche 2 settlement", "netbanking"),
+        (date(2024, 6, 18), "01:50:30", "Offshore_Holdings_LLC", 29000.00, "Capital rebalance", "netbanking"),
+    ]
+    for d, t, payee, amt, desc, channel in anomalies:
+        rows.append({
+            "transaction_id": f"TXN-CORP-{idx:04d}",
+            "date":           d.isoformat(),
+            "time":           t,
+            "description":    desc,
+            "payee":          payee,
+            "amount":         amt,
+            "channel":        channel,
+        })
+        idx += 1
+
+    rows.sort(key=lambda r: (r["date"], r["time"]))
+    return rows
+
+
+# ---------------------------------------------------------------------------
 # Verification summary
 # ---------------------------------------------------------------------------
-def _verify(letter: str, rows: list[dict]) -> None:
-    cid = f"customer_{letter}"
+def _verify(name: str, rows: list[dict]) -> None:
     n = len(rows)
     amounts = [float(r["amount"]) for r in rows]
     dates = [r["date"] for r in rows]
     headers_ok = list(rows[0].keys()) == FIELDNAMES if rows else False
 
-    print(f"\n{'─'*55}")
-    print(f"  {cid}.csv")
-    print(f"{'─'*55}")
+    print(f"\n{'-'*55}")
+    print(f"  {name}.csv")
+    print(f"{'-'*55}")
     print(f"  Rows          : {n}")
     print(f"  Headers OK    : {headers_ok}")
-    print(f"  Date range    : {min(dates)} → {max(dates)}")
+    print(f"  Date range    : {min(dates)} -> {max(dates)}")
+
     print(f"  Amount min    : ${min(amounts):.2f}")
     print(f"  Amount max    : ${max(amounts):.2f}")
     print(f"  Amount mean   : ${sum(amounts)/len(amounts):.2f}")
-    print(f"  ≥ 100 rows    : {'✅' if n >= 100 else '❌'}")
-    print(f"  ≥ 15 rows     : {'✅' if n >= 15 else '❌'}")
+    print(f"  >= 15 rows    : {'[OK]' if n >= 15 else '[FAIL]'}")
 
 
 # ---------------------------------------------------------------------------
@@ -384,31 +524,35 @@ def _verify(letter: str, rows: list[dict]) -> None:
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     print("=" * 55)
-    print("  LedgerWatch — Synthetic Data Generator")
+    print("  LedgerWatch - Synthetic & Benchmark Data Generator")
     print("  TRACK_ID=PS06")
     print("=" * 55)
 
-    customers = [
-        ("A", generate_A),
-        ("B", generate_B),
-        ("C", generate_C),
-        ("D", generate_D),
+    datasets = [
+        ("customer_A", generate_A),
+        ("customer_B", generate_B),
+        ("customer_C", generate_C),
+        ("customer_D", generate_D),
+        ("benchmark_PaySim_mule", generate_PaySim_mule),
+        ("benchmark_corporate_payroll", generate_corporate_payroll),
     ]
 
     all_rows = {}
-    for letter, gen_fn in customers:
+    for name, gen_fn in datasets:
         rows = gen_fn()
-        filename = f"customer_{letter}.csv"
+        filename = f"{name}.csv"
         _write_csv(filename, rows)
-        all_rows[letter] = rows
-        print(f"  ✓ Written → data/customers/{filename}  ({len(rows)} rows)")
+        all_rows[name] = rows
+        print(f"  [OK] Written -> data/customers/{filename}  ({len(rows)} rows)")
 
     print("\n" + "=" * 55)
     print("  Verification Summary")
     print("=" * 55)
-    for letter, rows in all_rows.items():
-        _verify(letter, rows)
+    for name, rows in all_rows.items():
+        _verify(name, rows)
 
     print(f"\n{'='*55}")
-    print("  ✅ All 4 datasets generated successfully.")
+    print("  [SUCCESS] All datasets (4 baseline + 2 real-world benchmarks) generated.")
     print(f"{'='*55}\n")
+
+

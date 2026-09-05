@@ -99,6 +99,70 @@ def build_report(customer_id: str) -> dict[str, Any]:
     duration_ms = int((time.monotonic() - t_start) * 1000)
     run_at      = datetime.now(timezone.utc).isoformat()
 
+    # ── Graph Data (Counterparty Network) ─────────────────────────────────
+    flagged_txn_ids = set()
+    for f in enriched_findings:
+        for tid in (f.get("transaction_ids") or f.get("transactions") or []):
+            flagged_txn_ids.add(tid)
+
+    total_outflow = round(float(df["amount"].sum()), 2)
+    nodes = [{
+        "id": customer_id,
+        "label": customer_id,
+        "type": "customer",
+        "total_volume": total_outflow,
+        "txn_count": int(len(df)),
+    }]
+    edges = []
+
+    payee_groups = df.groupby("payee")
+    for payee, p_df in payee_groups:
+        payee_vol = round(float(p_df["amount"].sum()), 2)
+        p_txns = int(len(p_df))
+        p_flagged = bool(any(p_df["transaction_id"].isin(flagged_txn_ids)))
+        first_seen = baseline.get("payee_first_seen", {}).get(str(payee), "")
+        nodes.append({
+            "id": str(payee),
+            "label": str(payee),
+            "type": "payee",
+            "total_volume": payee_vol,
+            "txn_count": p_txns,
+            "is_flagged": p_flagged,
+            "first_seen": first_seen,
+        })
+        edges.append({
+            "source": customer_id,
+            "target": str(payee),
+            "amount": payee_vol,
+            "count": p_txns,
+            "is_flagged": p_flagged,
+        })
+
+    graph_data = {"nodes": nodes, "edges": edges}
+
+    # ── Diurnal Circadian Profile (24h Activity vs Outlier Window) ───────
+    h_start = baseline.get("active_hour_start", 8)
+    h_end = baseline.get("active_hour_end", 22)
+    hourly = []
+    for h in range(24):
+        h_df = df[df["hour"] == h]
+        h_flagged = int(h_df["transaction_id"].isin(flagged_txn_ids).sum()) if not h_df.empty else 0
+        h_vol = round(float(h_df["amount"].sum()), 2) if not h_df.empty else 0.0
+        hourly.append({
+            "hour": h,
+            "label": f"{h:02d}:00",
+            "count": int(len(h_df)),
+            "flagged_count": h_flagged,
+            "volume": h_vol,
+            "in_active_window": bool(h_start <= h <= h_end),
+        })
+
+    diurnal_profile = {
+        "active_hour_start": h_start,
+        "active_hour_end":   h_end,
+        "hours":             hourly,
+    }
+
     report: dict[str, Any] = {
         "customer_id": customer_id,
         "verdict":     verdict,
@@ -108,18 +172,21 @@ def build_report(customer_id: str) -> dict[str, Any]:
             "amount_std":           baseline.get("amount_std"),
             "amount_p95":           baseline.get("amount_p95"),
             "active_window":        (
-                f"{baseline.get('active_hour_start', 8):02d}:00 – "
+                f"{baseline.get('active_hour_start', 8):02d}:00 - "
                 f"{baseline.get('active_hour_end', 22):02d}:59"
             ),
             "total_transactions":   baseline.get("total_transactions"),
             "avg_weekly_txns":      baseline.get("avg_weekly_txns"),
             "insufficient_history": baseline.get("insufficient_history", False),
         },
-        "gemini_used": gemini_used_any,
-        "duration_ms": duration_ms,
-        "run_at":      run_at,
-        "disclaimer":  DISCLAIMER,
+        "graph_data":      graph_data,
+        "diurnal_profile": diurnal_profile,
+        "gemini_used":     gemini_used_any,
+        "duration_ms":     duration_ms,
+        "run_at":          run_at,
+        "disclaimer":      DISCLAIMER,
     }
+
 
     # ── Step 8: Persist to SQLite ─────────────────────────────────────────
     # Saves: investigations row + findings rows + finding_transactions rows

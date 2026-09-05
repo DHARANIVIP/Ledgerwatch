@@ -28,10 +28,12 @@ from server.repository import (
 # Master customer list
 # ---------------------------------------------------------------------------
 CUSTOMERS = [
-    ("customer_A", "Customer A", "clean"),
-    ("customer_B", "Customer B", "suspicious"),
-    ("customer_C", "Customer C", "borderline"),
-    ("customer_D", "Customer D", "pattern_break"),
+    ("customer_A", "Customer A — Clean Baseline", "clean"),
+    ("customer_B", "Customer B — Suspicious Activity", "suspicious"),
+    ("customer_C", "Customer C — Borderline Odd-Hours", "borderline"),
+    ("customer_D", "Customer D — Velocity Pattern Break", "pattern_break"),
+    ("benchmark_PaySim_mule", "PaySim Benchmark — Mobile Money Mule Drain", "benchmark_mule"),
+    ("benchmark_corporate_payroll", "Treasury Benchmark — Corporate Payroll Diversion", "benchmark_corporate"),
 ]
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "customers")
@@ -41,7 +43,7 @@ def _read_csv(customer_id: str) -> list[dict]:
     """Reads a customer CSV and returns list of row dicts with customer_id injected."""
     path = os.path.join(DATA_DIR, f"{customer_id}.csv")
     if not os.path.exists(path):
-        print(f"  ⚠  CSV not found: {path}  — run server/data_gen.py first")
+        print(f"  [!] CSV not found: {path} - run server/data_gen.py first")
         return []
 
     rows = []
@@ -51,7 +53,7 @@ def _read_csv(customer_id: str) -> list[dict]:
         for line_idx, row in enumerate(reader, start=2):  # start=2 (header is line 1)
             # Validate required fields per schema edge-case protocol
             if not row.get("transaction_id"):
-                print(f"    Line {line_idx}: null transaction_id — skipped")
+                print(f"    Line {line_idx}: null transaction_id - skipped")
                 unparseable += 1
                 continue
             try:
@@ -59,13 +61,13 @@ def _read_csv(customer_id: str) -> list[dict]:
                 if amount <= 0:
                     raise ValueError("amount must be > 0")
             except (ValueError, KeyError):
-                print(f"    Line {line_idx}: non-numeric/invalid amount — skipped")
+                print(f"    Line {line_idx}: non-numeric/invalid amount - skipped")
                 unparseable += 1
                 continue
             # Validate date is parseable (basic check)
             date_str = row.get("date", "")
             if len(date_str) != 10 or date_str[4] != "-" or date_str[7] != "-":
-                print(f"    Line {line_idx}: malformed date '{date_str}' — skipped")
+                print(f"    Line {line_idx}: malformed date '{date_str}' - skipped")
                 unparseable += 1
                 continue
 
@@ -94,7 +96,7 @@ def seed(force: bool = False) -> None:
                If False (default), skips customers that already have transactions.
     """
     print("=" * 55)
-    print("  LedgerWatch — Database Seeder")
+    print("  LedgerWatch - Database Seeder")
     print("  TRACK_ID=PS06")
     print("=" * 55)
 
@@ -104,7 +106,7 @@ def seed(force: bool = False) -> None:
     total_inserted = 0
 
     for customer_id, display_name, profile_type in CUSTOMERS:
-        print(f"\n▶  {customer_id}")
+        print(f"\n> {customer_id}")
 
         # Insert customer master row (idempotent)
         insert_customer(customer_id, display_name, profile_type)
@@ -112,7 +114,7 @@ def seed(force: bool = False) -> None:
         # Check existing count
         existing = get_transaction_count(customer_id)
         if existing > 0 and not force:
-            print(f"   Already has {existing} transactions — skipping (use force=True to re-seed)")
+            print(f"   Already has {existing} transactions - skipping (use force=True to re-seed)")
             continue
 
         # Read CSV
@@ -124,13 +126,14 @@ def seed(force: bool = False) -> None:
         inserted = insert_transactions(rows)
         total_inserted += inserted
         final_count = get_transaction_count(customer_id)
-        print(f"   ✓ Inserted {inserted} rows  (total in DB: {final_count})")
+        print(f"   [OK] Inserted {inserted} rows (total in DB: {final_count})")
 
     # Summary
     print(f"\n{'='*55}")
-    print(f"  ✅ Seeding complete — {total_inserted} rows inserted")
+    print(f"  [SUCCESS] Seeding complete - {total_inserted} rows inserted")
     _print_summary()
     print(f"{'='*55}\n")
+
 
 
 def _print_summary() -> None:
@@ -154,7 +157,7 @@ def _print_summary() -> None:
                 (customer_id,),
             ).fetchone()
             if row and row["n"] > 0:
-                date_range = f"{row['d_min']} → {row['d_max']}"
+                date_range = f"{row['d_min']} -> {row['d_max']}"
                 print(
                     f"  {customer_id:<14} {row['n']:>6}  {date_range:<25}  "
                     f"${row['a_min']:>7.2f}  ${row['a_max']:>9.2f}"

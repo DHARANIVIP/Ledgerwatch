@@ -1,6 +1,6 @@
 TRACK_ID=PS06
 
-# LedgerWatch — Transaction Risk Investigation Assistant
+# LedgerWatch — Transaction Risk Intelligence Platform
 
 > **Track:** PS06 — Transaction Risk Investigation Assistant  
 > **Repository:** [https://github.com/DHARANIVIP/Ledgerwatch.git](https://github.com/DHARANIVIP/Ledgerwatch.git)  
@@ -8,56 +8,41 @@ TRACK_ID=PS06
 
 ---
 
-## Overview
+## Executive Overview
 
-**LedgerWatch** is an enterprise-grade transaction risk investigation platform engineered for banking fraud and risk operations desks. It bridges the gap between deterministic, auditable anomaly detection and intelligent human-readable narration.
+**LedgerWatch** is an enterprise-grade financial surveillance and transaction risk investigation platform engineered for bank fraud operations, AML surveillance, and regulatory risk desks. It bridges the gap between deterministic, auditable anomaly detection and intelligent human-readable AI narration.
 
-Unlike naive AI solutions that delegate risk scoring directly to large language models, LedgerWatch follows a **Strict Separation of Concerns**:
-1. **Mathematical & Deterministic Detection (Zero-LLM):** All risk evaluations, threshold calculations, and verdicts are computed deterministically in pure Python using customer-specific historical baselines.
-2. **Intelligent Explainability Layer:** Google Gemini (Gemini 2.5 Flash) is used strictly for narration—translating complex statistical deviations and multi-transaction bursts into clear, actionable, non-accusatory findings for human investigators.
-3. **Graceful Fallback:** If `GEMINI_API_KEY` is not provided or network is offline, a deterministic templating fallback seamlessly takes over with zero downtime.
-4. **End-to-End Traceability & Auditability:** Backed by SQLite (and Supabase PostgreSQL schema), every finding links directly to immutable transaction records.
+Unlike naive generative AI tools that hallucinate risk verdicts, LedgerWatch follows a **Strict Separation of Concerns**:
+1. **Deterministic Risk Engine (Zero-LLM):** All risk evaluations, baseline calculations ($\mu + 3\sigma$, rolling velocity, diurnal boundaries), and verdicts (`attention_needed` vs. `nothing_flagged`) are executed deterministically in pure Python.
+2. **Real-World Data Telemetry:** Ingests live bank statements from any CSV format, features pre-loaded institutional benchmarks modeled on real-world PaySim distributions, and provides simulated real-time wire surveillance.
+3. **Interactive Visual Intelligence:** Topological Counterparty Knowledge Graph, 24-Hour Circadian Diurnal Radar, and dynamic full-ledger audit inspection.
+4. **Official SAR Dossier Generator:** 1-click generation of FinCEN / FIU compliant Suspicious Activity Reports with SHA-256 cryptographic audit integrity hashes and print-ready PDF styling.
+5. **Non-Accusatory Tone Guardrail:** Automatic post-generation regex filters intercept accusatory language, replacing terms like `fraud` and `criminal` with neutral, legally defensible operational terminology.
 
 ---
 
-## Architecture & System Flow
+## Interactive Platform Capabilities
 
 ```
-+-----------------------------------------------------------------------------------+
-|                             Single Host (:8000)                                   |
-|                                                                                   |
-|   +---------------------------------------------------------------------------+   |
-|   |                        Client (React 18 Dashboard)                        |   |
-|   |   - Account Selector  - Investigation Trigger  - Traceability Modal       |   |
-|   |   - Verdict Banner    - Ranked Findings Grid   - DB & Audit Inspector     |   |
-|   +---------------------------------------------------------------------------+   |
-|                                         |                                         |
-|                                (REST / JSON API)                                  |
-|                                         v                                         |
-|   +---------------------------------------------------------------------------+   |
-|   |                          Server (FastAPI Engine)                          |   |
-|   |                                                                           |   |
-|   |   1. Ingestion & Persistence (SQLite / Supabase)                          |   |
-|   |      └── Auto-seed from CSVs -> customers, transactions, findings         |   |
-|   |                                                                           |   |
-|   |   2. Behavioral Profiler (baseline.py)                                    |   |
-|   |      └── Computes μ, σ, diurnal active windows, counterparty baselines    |   |
-|   |                                                                           |   |
-|   |   3. Deterministic Risk Core (rules.py)                                   |   |
-|   |      ├── Rule 1: Large Outlier Transfer (Amount > μ + 3σ)                 |   |
-|   |      ├── Rule 2: Rapid Burst to New Payee (≥3 tx / 7d to payee ≤14d)     |   |
-|   |      ├── Rule 3: Off-Hours Initiation (Outside 95% diurnal boundary)      |   |
-|   |      └── Rule 4: Structural Pattern Break (Velocity/volume shift > 2.5x)  |   |
-|   |                                                                           |   |
-|   |   4. Aggregator & Prioritizer (correlate.py & prioritize.py)              |   |
-|   |      └── Hit Deduplication -> Multi-Factor Severity Scoring (1 - 100)     |   |
-|   |                                                                           |   |
-|   |   5. Explainability Layer (gemini_client.py & narrate.py)                 |   |
-|   |      ├── Primary: Google GenAI (gemini-2.5-flash) via GEMINI_API_KEY      |   |
-|   |      ├── Secondary: Pure Python Deterministic Template Fallback           |   |
-|   |      └── Guardrail: Regex Safety Filter (Neutralizes accusatory terms)    |   |
-|   +---------------------------------------------------------------------------+   |
-+-----------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------+
+|                                    LEDGERWATCH COMMAND CENTER                                 |
++-----------------------------------------------------------------------------------------------+
+|                                                                                               |
+|   1. INVESTIGATION DESK                  2. LIVE WIRE SURVEILLANCE     3. STATEMENT IMPORTER   |
+|   • Core Profiles (Customer A–D)         • Real-Time Authorization Wire • Drag & Drop Bank CSV |
+|   • Real-World Benchmarks (PaySim, Corp) • Rolling Velocity Tachometer  • Auto-Header Mapping  |
+|   • Correlated Finding Cards             • Dynamic Threat Score (1–100) • Multi-Bank Normalizer|
+|   • Google Gemini 2.5 Flash Narration    • Instant Anomaly Interception • Instant Baseline Run |
+|                                                                                               |
+|   +---------------------------------------------------------------------------------------+   |
+|   |                              VISUAL & AUDIT ANALYTICS                                 |   |
+|   |                                                                                       |   |
+|   |   • Counterparty Knowledge Graph: Interactive node-edge topology mapping capital flow |   |
+|   |   • 24h Diurnal Circadian Radar: Empirical 95% active daylight arc vs off-hours ping  |   |
+|   |   • Full Audit Transaction Ledger: Searchable row-level drill-down with modal inspect |   |
+|   |   • 1-Click SAR Dossier: Official FinCEN / FIU regulatory export with SHA-256 hash    |   |
+|   +---------------------------------------------------------------------------------------+   |
++-----------------------------------------------------------------------------------------------+
 ```
 
 ---
@@ -66,49 +51,61 @@ Unlike naive AI solutions that delegate risk scoring directly to large language 
 
 ```
 Ledgerwatch/
-├── app.py                     # Root entrypoint: FastAPI server + serves client/dist SPA
-├── requirements.txt           # Python dependencies
-├── README.md                  # Comprehensive project documentation
-├── .gitignore                 # Excludes caches, node_modules, and binary databases
+├── app.py                         # Root entrypoint: FastAPI server + serves client/dist SPA
+├── requirements.txt               # Python dependencies
+├── README.md                      # Comprehensive platform documentation
+├── .gitignore                     # Excludes caches, node_modules, and binary databases
 ├── data/
 │   ├── customers/
-│   │   ├── customer_A.csv     # 100% Routine transactions — clean baseline
-│   │   ├── customer_B.csv     # Suspicious: burst + large transfer + odd-hours
-│   │   ├── customer_C.csv     # Borderline: single isolated off-hours hit
-│   │   └── customer_D.csv     # Pattern break: sudden shift in velocity & volume
-│   └── schema.md              # Transaction schema specifications
+│   │   ├── customer_A.csv         # 100% Routine transactions — clean baseline
+│   │   ├── customer_B.csv         # Suspicious: burst + large transfer + odd-hours
+│   │   ├── customer_C.csv         # Borderline: single isolated off-hours hit
+│   │   ├── customer_D.csv         # Pattern break: sudden shift in velocity & volume
+│   │   ├── benchmark_PaySim_mule.csv            # PaySim Real Distribution: Mobile Money Mule Drain
+│   │   └── benchmark_corporate_payroll.csv      # Corporate Treasury: Payroll Diversion Anomaly
+│   └── schema.md                  # Canonical transaction schema specifications
 ├── database/
-│   └── .gitkeep               # Preserves database directory for SQLite
+│   └── .gitkeep                   # Preserves database directory for SQLite
 ├── server/
 │   ├── __init__.py
-│   ├── database.py            # SQLite connection manager, schema setup, WAL mode
-│   ├── repository.py          # Data access layer for customers, txns, findings
-│   ├── seed_database.py       # Seeds SQLite from CSV datasets on startup
-│   ├── data_gen.py            # Generates synthetic customer datasets
-│   ├── baseline.py            # Customer-specific behavioral profiler
-│   ├── rules.py               # 4 pure deterministic detection rules (No LLM)
-│   ├── correlate.py           # Groups related hits into cohesive findings
-│   ├── prioritize.py          # Ranks findings by deviation severity (1–100)
-│   ├── gemini_client.py       # Google GenAI wrapper with automatic fallback
-│   ├── narrate.py             # Prompt builder + post-generation safety guardrails
-│   ├── models.py              # Pydantic data schemas
-│   └── report.py              # Orchestrates the full end-to-end investigation
+│   ├── database.py                # SQLite connection manager, schema setup, WAL mode
+│   ├── repository.py              # Data access layer for customers, txns, findings
+│   ├── seed_database.py           # Auto-seeds SQLite from CSV datasets on startup
+│   ├── data_gen.py                # Generates synthetic & real-world benchmark datasets
+│   ├── statement_ingest.py        # Universal bank statement parser & header inferencing
+│   ├── stream_engine.py           # Real-time live wire surveillance telemetry generator
+│   ├── sar_report.py              # FinCEN/FIU compliant Suspicious Activity Report builder
+│   ├── baseline.py                # Customer-specific behavioral profiler (μ, σ, diurnal windows)
+│   ├── rules.py                   # 4 pure deterministic detection rules (No LLM)
+│   ├── correlate.py               # Groups related hits into cohesive findings
+│   ├── prioritize.py              # Ranks findings by deviation severity (1–100)
+│   ├── gemini_client.py           # Google GenAI wrapper with automatic fallback
+│   ├── narrate.py                 # Prompt builder + post-generation safety guardrails
+│   ├── models.py                  # Pydantic data schemas
+│   └── report.py                  # Orchestrates the full end-to-end investigation
 ├── supabase/
-│   ├── schema.sql             # Full PostgreSQL schema with RLS & indexes
-│   └── seed.sql               # PostgreSQL seed data
-└── client/                    # React 18 + Vite + Tailwind CSS Frontend
+│   ├── schema.sql                 # Full PostgreSQL schema with RLS & indexes
+│   └── seed.sql                   # PostgreSQL seed data
+└── client/                        # React 18 + Vite + Tailwind CSS Frontend
     ├── package.json
     ├── vite.config.js
     ├── index.html
     ├── src/
-    │   ├── App.jsx            # Main dashboard container
-    │   ├── main.jsx           # React DOM root
+    │   ├── App.jsx                # Main command center shell & navigation
+    │   ├── main.jsx               # React DOM root
+    │   ├── index.css              # Design system tokens & print styles
     │   └── components/
-    │       ├── CustomerSelector.jsx # Customer account selector
-    │       ├── VerdictBanner.jsx    # Dynamic verdict banner
-    │       ├── FindingCard.jsx      # Glassmorphic finding breakdown
-    │       └── TxModal.jsx          # Row-level transaction audit drill-down
-    └── dist/                  # Production-built bundle (served by app.py)
+    │       ├── CustomerSelector.jsx     # Profile selector with quick launch cards
+    │       ├── LiveWireSurveillance.jsx # Real-time wire surveillance cockpit
+    │       ├── StatementImporter.jsx    # Universal drag-and-drop CSV importer
+    │       ├── ReportView.jsx           # Tabbed investigation container
+    │       ├── NetworkGraph.jsx         # Interactive counterparty risk knowledge graph
+    │       ├── DiurnalRadar.jsx         # 24-Hour circadian diurnal polar clock
+    │       ├── SarDossierModal.jsx      # Official FinCEN / FIU regulatory SAR dossier
+    │       ├── VerdictBanner.jsx        # High-visibility verdict status banner
+    │       ├── FindingCard.jsx          # Glassmorphic finding breakdown
+    │       └── TxModal.jsx              # Modal drill-down for row-level audit
+    └── dist/                      # Pre-compiled production bundle (served by app.py)
 ```
 
 ---
@@ -117,7 +114,7 @@ Ledgerwatch/
 
 ### 1. Prerequisites
 - **Python 3.10+**
-- (Optional) **Node.js 18+** (only needed if modifying the frontend source)
+- (Optional) **Node.js 18+** (only needed if modifying frontend source)
 - (Optional) **Google Gemini API Key** (system includes deterministic fallback)
 
 ### 2. Clone the Repository
@@ -144,11 +141,6 @@ $env:GEMINI_API_KEY = "your_gemini_api_key_here"
 export GEMINI_API_KEY="your_gemini_api_key_here"
 ```
 
-**Command Prompt (Windows):**
-```cmd
-set GEMINI_API_KEY=your_gemini_api_key_here
-```
-
 ### 5. Launch LedgerWatch
 Run the single start command:
 ```bash
@@ -160,13 +152,13 @@ python app.py
 - **System Health:** [http://localhost:8000/api/health](http://localhost:8000/api/health)
 - **Database Stats:** [http://localhost:8000/api/db/stats](http://localhost:8000/api/db/stats)
 
-> **Zero extra steps:** `app.py` automatically checks if the SQLite database is initialized, provisions tables, seeds from the customer CSVs, and serves both the backend API and the compiled React UI on port 8000.
+> **Single-Command Simplicity:** `app.py` automatically initializes tables, seeds both baseline and real-world benchmark datasets into SQLite, and immediately serves the API and React dashboard on port 8000.
 
 ---
 
 ## Detection Rules Engine
 
-LedgerWatch enforces 4 deterministic detection rules that evaluate behavioral anomalies without relying on stochastic LLMs:
+LedgerWatch enforces 4 deterministic detection rules that evaluate behavioral anomalies without stochastic LLM decisions:
 
 | Rule Name | Trigger Condition | Severity Impact |
 |-----------|-------------------|-----------------|
@@ -177,16 +169,18 @@ LedgerWatch enforces 4 deterministic detection rules that evaluate behavioral an
 
 ---
 
-## Customer Datasets
+## Customer & Benchmark Datasets
 
-LedgerWatch includes synthetic customer datasets in `data/customers/` representing distinct risk scenarios:
+LedgerWatch includes synthetic baseline profiles and real-world institutional benchmark distributions in `data/customers/`:
 
-| Customer | Scenario & Behavioral Profile | Expected Verdict | Primary Flagged Behavior |
-|----------|-------------------------------|------------------|--------------------------|
+| Dataset Identifier | Scenario Profile | Expected Verdict | Primary Flagged Behavior |
+|--------------------|------------------|------------------|--------------------------|
 | **Customer A** | Baseline Routine Profile | `nothing_flagged` | Consistent ticket sizes, daytime activity, recognized payees |
-| **Customer B** | Rapid Fund Drainage | `attention_needed` | Multiple rapid transfers to an unseen payee + 03:20 AM transaction + amount $> \mu + 3\sigma$ |
-| **Customer C** | Borderline Anomaly | `attention_needed` | Single isolated 02:45 AM transaction with otherwise routine behavior |
+| **Customer B** | Rapid Fund Drainage | `attention_needed` | Multiple rapid transfers to novel payee + 03:20 AM transaction + amount $> \mu + 3\sigma$ |
+| **Customer C** | Borderline Anomaly | `attention_needed` | Single isolated 02:45 AM transaction with otherwise routine daytime behavior |
 | **Customer D** | Structural Pattern Shift | `attention_needed` | Sudden transition from small UPI transactions to high-velocity netbanking transfers |
+| **PaySim Benchmark** | Mobile Money Mule Drain | `attention_needed` | Real-world PaySim distribution: 4 months of micro-payments followed by 4 rapid mule transfers ($4,850–$9,250) at 03:18 AM |
+| **Treasury Benchmark** | Corporate Payroll Diversion | `attention_needed` | Steady bi-weekly contractor payroll followed by unauthorized off-hours overseas transfer ($48,900) at 02:40 AM |
 
 ---
 
@@ -195,33 +189,14 @@ LedgerWatch includes synthetic customer datasets in `data/customers/` representi
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/customers` | Returns all customer profiles from the database |
-| `GET` | `/api/investigate/{customer_id}` | Runs the complete risk pipeline and returns structured findings |
-| `GET` | `/api/transactions/{customer_id}` | Returns all transaction rows for audit verification |
-| `GET` | `/api/transactions/{customer_id}/{txn_id}` | Returns details of a specific transaction for modal drill-down |
+| `GET` | `/api/investigate/{customer_id}` | Runs complete risk pipeline, returns structured findings, graph nodes, and diurnal profile |
+| `GET` | `/api/transactions/{customer_id}` | Returns raw transaction records for audit verification |
+| `GET` | `/api/transactions/{customer_id}/{txn_id}` | Returns single transaction record for modal drill-down |
+| `POST` | `/api/ingest/statement` | Ingests arbitrary CSV bank statements, normalizes schema, and returns real-time risk report |
+| `GET` | `/api/stream/events` | Telemetry endpoint emitting real-time simulated live wire transactions with dynamic velocity metrics |
+| `GET` | `/api/reports/sar/{customer_id}` | Generates official FinCEN / FIU compliant Suspicious Activity Report dossier with SHA-256 hash |
 | `GET` | `/api/health` | Health check reporting database status and Gemini configuration |
 | `GET` | `/api/db/stats` | Returns real-time row counts across all database tables |
-
-### Sample Response: `/api/investigate/customer_B`
-
-```json
-{
-  "customer_id": "customer_B",
-  "verdict": "attention_needed",
-  "findings": [
-    {
-      "finding_id": "F001",
-      "rule": "rule_burst_new_payee",
-      "severity": 87,
-      "transactions": ["TXN-0042", "TXN-0043", "TXN-0044"],
-      "observed": "4 transactions in 3 days to new payee",
-      "baseline": "avg 1.2 transactions/week per payee",
-      "narrative": "Between Sep 12 and Sep 15, 4 successive transfers were initiated to an unfamiliar counterparty...",
-      "action_tip": "Verify payee identity and confirm multi-factor authorization."
-    }
-  ],
-  "disclaimer": "This is a flag-and-explain report for human investigator review — it does not determine wrongdoing."
-}
-```
 
 ---
 
@@ -234,20 +209,6 @@ To comply with financial regulatory standards (e.g., Fair Lending, Adverse Actio
    > *"This is a flag-and-explain report for human investigator review — it does not determine wrongdoing."*
 3. **Data Minimization & Privacy:** Reports reference internal `transaction_id` references rather than raw PII.
 4. **Deterministic Integrity:** The risk verdict (`attention_needed` vs. `nothing_flagged`) is strictly locked to Python rule outputs—the LLM is never permitted to set or modify risk verdicts.
-
----
-
-## Supabase / PostgreSQL Support
-
-LedgerWatch provides enterprise PostgreSQL support via `supabase/schema.sql`:
-- Complete relational schema: `customers`, `transactions`, `findings`, and `investigations` audit tables.
-- Row-Level Security (RLS) policies for secure investigator tenant isolation.
-- B-tree and composite indexing for sub-millisecond query execution.
-
-Apply schema to your database:
-```bash
-psql -h db.your-project.supabase.co -U postgres -d postgres -f supabase/schema.sql
-```
 
 ---
 

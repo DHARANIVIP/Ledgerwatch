@@ -149,7 +149,7 @@ def create_tables() -> None:
         conn.execute(CREATE_FINDING_TRANSACTIONS)
         for idx_sql in CREATE_INDEXES:
             conn.execute(idx_sql)
-    print(f"[database] Schema ready → {DB_PATH}")
+    print(f"[database] Schema ready -> {DB_PATH}")
 
 
 def is_seeded() -> bool:
