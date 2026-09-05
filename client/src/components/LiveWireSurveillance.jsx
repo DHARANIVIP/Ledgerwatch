@@ -17,7 +17,10 @@ export default function LiveWireSurveillance({ onInvestigateCustomer }) {
   const fetchPacket = async (forceAnomaly = false) => {
     try {
       const res = await fetch(`${API}/api/stream/events?anomaly=${forceAnomaly}`)
-      if (!res.ok) return
+      const contentType = res.headers.get('content-type') || ''
+      if (!res.ok || !contentType.includes('application/json')) {
+        return
+      }
       const packet = await res.json()
 
       setEvents(prev => [packet, ...prev.slice(0, 49)]) // keep last 50
@@ -31,9 +34,10 @@ export default function LiveWireSurveillance({ onInvestigateCustomer }) {
         setThreatScore(prev => Math.max(12, prev - 2))
       }
     } catch (err) {
-      console.error('Live wire stream error:', err)
+      console.warn('Live wire stream packet skipped:', err.message)
     }
   }
+
 
   // Polling loop
   useEffect(() => {

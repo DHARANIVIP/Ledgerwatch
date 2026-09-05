@@ -67,8 +67,13 @@ export default function StatementImporter({ onStatementIngested }) {
       })
 
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        throw new Error(errData.detail || `Upload failed with status ${res.status}`)
+        const cType = res.headers.get('content-type') || ''
+        let msg = `Upload failed with status ${res.status}`
+        if (cType.includes('application/json')) {
+          const errData = await res.json().catch(() => ({}))
+          msg = errData.detail || msg
+        }
+        throw new Error(msg)
       }
 
       const data = await res.json()

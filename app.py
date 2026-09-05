@@ -318,10 +318,11 @@ else:
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    print(f"\n🚀  LedgerWatch starting on http://localhost:{port}")
-    print(f"    API docs  → http://localhost:{port}/docs")
-    print(f"    DB stats  → http://localhost:{port}/api/db/stats")
-    print(f"    Frontend  → http://localhost:{port}/\n")
+    print(f"\n[+] LedgerWatch starting on http://localhost:{port}")
+    print(f"    API docs  -> http://localhost:{port}/docs")
+    print(f"    DB stats  -> http://localhost:{port}/api/db/stats")
+    print(f"    Frontend  -> http://localhost:{port}/\n")
+
 
     uvicorn.run(
         "app:app",

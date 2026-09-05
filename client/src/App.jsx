@@ -32,8 +32,13 @@ export default function App() {
       ])
 
       if (!reportRes.ok) {
-        const errData = await reportRes.json().catch(() => ({}))
-        throw new Error(errData.detail || `Server error ${reportRes.status}`)
+        const cType = reportRes.headers.get('content-type') || ''
+        let msg = `Server error ${reportRes.status}`
+        if (cType.includes('application/json')) {
+          const errData = await reportRes.json().catch(() => ({}))
+          msg = errData.detail || msg
+        }
+        throw new Error(msg)
       }
 
       const reportData = await reportRes.json()
@@ -167,7 +172,9 @@ export default function App() {
               setCustomer(customerId)
               runInvestigation(customerId)
             }}
+            onNavigate={(mode) => setNavMode(mode)}
           />
+
         ) : (
           <ReportView
             report={report}
