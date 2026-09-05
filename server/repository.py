@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 from typing import Any, Optional
 
+# pyrefly: ignore [missing-import]
 import pandas as pd
 
 from server.database import db_session

@@ -14,6 +14,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
+# pyrefly: ignore [missing-import]
 import pandas as pd
 
 from server.repository import insert_customer, insert_transactions

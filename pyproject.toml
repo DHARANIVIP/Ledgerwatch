@@ -1,0 +1,20 @@
+[tool.pyrefly]
+python-version = "3.14"
+ignore-missing-imports = true
+exclude = [
+    "**/__pyrefly_virtual__/**",
+    "**/inmemory/**",
+    "**/node_modules/**",
+    ".git",
+    "data",
+]
+
+[tool.pyright]
+include = ["server", "app.py"]
+exclude = [
+    "**/__pyrefly_virtual__/**",
+    "**/inmemory/**",
+    "**/node_modules/**",
+    ".git",
+]
+reportMissingImports = false

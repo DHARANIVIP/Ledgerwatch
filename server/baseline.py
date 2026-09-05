@@ -18,7 +18,9 @@ from __future__ import annotations
 
 from typing import Any
 
+# pyrefly: ignore [missing-import]
 import numpy as np
+# pyrefly: ignore [missing-import]
 import pandas as pd
 
 from server.repository import get_transactions_df

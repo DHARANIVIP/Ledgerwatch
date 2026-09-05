@@ -15,6 +15,7 @@ import os
 import random
 from datetime import date, timedelta
 
+# pyrefly: ignore [missing-import]
 import numpy as np
 
 # ---------------------------------------------------------------------------
