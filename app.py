@@ -239,10 +239,13 @@ def health():
     from server.database import get_db_path, is_seeded
     from server.repository import get_transaction_count
 
+    from server.repository import get_all_customers
+    customers = get_all_customers()
     counts = {
-        cid: get_transaction_count(cid)
-        for cid in sorted(VALID_CUSTOMERS)
+        c["customer_id"]: get_transaction_count(c["customer_id"])
+        for c in customers
     }
+
 
     return {
         "status":           "ok",
