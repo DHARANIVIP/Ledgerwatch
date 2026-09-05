@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+database/*.db
+database/*.db-wal
+database/*.db-shm
+!database/.gitkeep
+node_modules/
+client/node_modules/
+.git/
+.vscode/
+.idea/
+.env
+.env.*
+README.local.md
