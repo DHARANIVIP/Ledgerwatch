@@ -111,15 +111,15 @@ def build_report(customer_id: str) -> dict[str, Any]:
         "label": customer_id,
         "type": "customer",
         "total_volume": total_outflow,
-        "txn_count": int(len(df)),
+        "txn_count": len(df),
     }]
     edges = []
 
     payee_groups = df.groupby("payee")
     for payee, p_df in payee_groups:
         payee_vol = round(float(p_df["amount"].sum()), 2)
-        p_txns = int(len(p_df))
-        p_flagged = bool(any(p_df["transaction_id"].isin(flagged_txn_ids)))
+        p_txns = len(p_df)
+        p_flagged = any(p_df["transaction_id"].isin(flagged_txn_ids))
         first_seen = baseline.get("payee_first_seen", {}).get(str(payee), "")
         nodes.append({
             "id": str(payee),
@@ -151,7 +151,7 @@ def build_report(customer_id: str) -> dict[str, Any]:
         hourly.append({
             "hour": h,
             "label": f"{h:02d}:00",
-            "count": int(len(h_df)),
+            "count": len(h_df),
             "flagged_count": h_flagged,
             "volume": h_vol,
             "in_active_window": bool(h_start <= h <= h_end),

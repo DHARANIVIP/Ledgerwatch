@@ -14,8 +14,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-# pyrefly: ignore [missing-import]
-import pandas as pd
+import pandas as pd  # type: ignore
 
 from server.repository import insert_customer, insert_transactions
 from server.report import build_report
@@ -47,7 +46,7 @@ def parse_and_ingest_statement(
         except UnicodeDecodeError:
             text = content.decode("latin-1", errors="replace")
     else:
-        text = str(content)
+        text = content
 
     if not text.strip():
         raise ValueError("Uploaded file is empty.")
@@ -94,7 +93,7 @@ def parse_and_ingest_statement(
         or (f"Statement: {filename}" if filename else f"Imported Statement #{cust_id[-6:]}")
     )
 
-    for idx, row in df_raw.iterrows():
+    for row_num, (_, row) in enumerate(df_raw.iterrows(), start=1):
         # Parse Amount
         raw_amt = row.get(col_amt)
         if pd.isna(raw_amt):
@@ -111,7 +110,7 @@ def parse_and_ingest_statement(
         # Parse Date & Time
         raw_date_val = str(row.get(col_date, "")).strip()
         parsed_dt = pd.to_datetime(raw_date_val, errors="coerce")
-        if pd.isna(parsed_dt):
+        if pd.isna(parsed_dt) or not hasattr(parsed_dt, "strftime"):
             continue
 
         date_str = parsed_dt.strftime("%Y-%m-%d")
@@ -123,10 +122,10 @@ def parse_and_ingest_statement(
             elif len(time_str) < 8:
                 time_str = "12:00:00"
         else:
-            time_str = parsed_dt.strftime("%H:%M:%S")
+            time_str = parsed_dt.strftime("%H:%M:%S") if hasattr(parsed_dt, "strftime") else "12:00:00"
             if time_str == "00:00:00":
                 # Assign daylight default if no time was captured
-                time_str = f"{10 + (idx % 8):02d}:{(idx * 7) % 60:02d}:00"
+                time_str = f"{10 + (row_num % 8):02d}:{(row_num * 7) % 60:02d}:00"
 
         # Payee & Description
         payee_val = (
@@ -163,7 +162,7 @@ def parse_and_ingest_statement(
         if col_txid and not pd.isna(row.get(col_txid)):
             txid = str(row.get(col_txid)).strip()
         else:
-            txid = f"TXN-IMP-{idx+1:04d}"
+            txid = f"TXN-IMP-{row_num:04d}"
 
         rows.append({
             "transaction_id": txid,

@@ -29,8 +29,7 @@ from __future__ import annotations
 import json
 from typing import Any, Optional
 
-# pyrefly: ignore [missing-import]
-import pandas as pd
+import pandas as pd  # type: ignore
 
 from server.database import db_session
 
@@ -242,7 +241,7 @@ def save_investigation(report: dict[str, Any]) -> int:
                     (finding_id, txn_id, customer_id),
                 )
 
-    return investigation_id
+    return int(investigation_id) if investigation_id is not None else 0
 
 
 def get_latest_investigation(customer_id: str) -> dict | None:

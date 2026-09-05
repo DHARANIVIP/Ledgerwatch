@@ -22,8 +22,7 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Any
 
-# pyrefly: ignore [missing-import]
-import pandas as pd
+import pandas as pd  # type: ignore
 
 
 # ---------------------------------------------------------------------------
@@ -82,22 +81,29 @@ def rule_burst_new_payee(
         new_payee_cutoff  = first_seen + timedelta(days=14)
 
         # Transactions to this payee within their "new" window
-        payee_txns = df[
+        start_ts = pd.to_datetime(first_seen)
+        end_ts = pd.to_datetime(new_payee_cutoff) + timedelta(days=1)
+        mask = (
             (df["payee"] == payee) &
-            (df["date"].dt.date >= first_seen) &
-            (df["date"].dt.date <= new_payee_cutoff)
-        ].sort_values("date")
+            (pd.to_datetime(df["date"]) >= start_ts) &
+            (pd.to_datetime(df["date"]) < end_ts)
+        )
+        payee_txns: pd.DataFrame = df[mask].sort_values(by="date")
 
         if len(payee_txns) < 3:
             continue
 
         # Rolling 7-day window scan
-        txn_dates = payee_txns["date"].dt.date.tolist()
+        txn_dates = [
+            d.date() if hasattr(d, "date") else pd.to_datetime(d).date()
+            for d in payee_txns["date"].tolist()
+        ]
         for d in txn_dates:
-            window_end  = d + timedelta(days=7)
+            w_start = pd.to_datetime(d)
+            w_end = w_start + timedelta(days=8)
             window_txns = payee_txns[
-                (payee_txns["date"].dt.date >= d) &
-                (payee_txns["date"].dt.date <= window_end)
+                (pd.to_datetime(payee_txns["date"]) >= w_start) &
+                (pd.to_datetime(payee_txns["date"]) < w_end)
             ]
             if len(window_txns) >= 3:
                 ratio = round(len(window_txns) / max(avg_weekly, 0.1), 4)
@@ -169,9 +175,12 @@ def rule_pattern_break(
     if avg_weekly == 0:
         return hits
 
-    df_sorted          = df.sort_values("date").copy()
-    df_sorted["date_only"] = df_sorted["date"].dt.date
-    all_dates          = sorted(df_sorted["date_only"].unique())
+    df_sorted: pd.DataFrame = df.sort_values(by="date").copy()
+    df_sorted["date_only"] = [
+        d.date() if hasattr(d, "date") else pd.to_datetime(d).date()
+        for d in df_sorted["date"]
+    ]
+    all_dates = sorted(set(df_sorted["date_only"]))
 
     for d in all_dates:
         window_end  = d + timedelta(days=7)

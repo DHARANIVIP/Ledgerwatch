@@ -18,10 +18,8 @@ from __future__ import annotations
 
 from typing import Any
 
-# pyrefly: ignore [missing-import]
-import numpy as np
-# pyrefly: ignore [missing-import]
-import pandas as pd
+import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
 
 from server.repository import get_transactions_df
 
@@ -62,17 +60,15 @@ def compute_baseline(customer_id: str) -> dict[str, Any]:
 
     # ── Payee first-seen registry ─────────────────────────────────────────
     df_sorted  = df.sort_values("date")
-    payee_first = (
-        df_sorted.groupby("payee")["date"]
-        .min()
-        .dt.strftime("%Y-%m-%d")
-        .to_dict()
-    )
+    payee_first = {
+        str(payee): (d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)[:10])
+        for payee, d in df_sorted.groupby("payee")["date"].min().items()
+    }
 
     # ── Channel distribution ──────────────────────────────────────────────
     channel_counts = df["channel"].value_counts(normalize=True)
     channel_dist   = {
-        str(k): round(float(v), 4)
+        str(k): round(v, 4)
         for k, v in channel_counts.items()
     }
 

@@ -65,7 +65,7 @@ def generate_live_event(
         reason = "Routine activity within diurnal 95% baseline boundaries"
 
     # Update rolling telemetry
-    _STREAM_STATE["last_minute_txns"] = max(8, int(_STREAM_STATE["last_minute_txns"] + random.choice([-1, 0, 1, 2])))
+    _STREAM_STATE["last_minute_txns"] = max(8, _STREAM_STATE["last_minute_txns"] + random.choice([-1, 0, 1, 2]))
     _STREAM_STATE["last_minute_volume"] = round(
         max(300.0, _STREAM_STATE["last_minute_volume"] * 0.95 + amount), 2
     )
