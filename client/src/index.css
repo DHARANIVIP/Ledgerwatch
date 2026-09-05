@@ -122,10 +122,11 @@ a {
 }
 
 .app-header-inner {
-  max-width: 960px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   padding: 0 var(--space-8);
-  height: 60px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,7 +139,7 @@ a {
 }
 
 .app-logo-wordmark {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -164,16 +165,33 @@ a {
   color: var(--accent);
   background: var(--accent-light);
   border: 1px solid #C7D2FE;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: var(--radius-sm);
   letter-spacing: 0.04em;
 }
 
 .app-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: var(--space-8);
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-6) var(--space-8);
+  min-height: calc(100vh - 64px);
 }
+
+/* ── Fluid Full-Screen Layout Helpers ── */
+.full-width-view {
+  width: 100%;
+  max-width: 100%;
+}
+
+.report-view {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
 
 /* ── Card ───────────────────────────────────── */
 .card {

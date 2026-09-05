@@ -105,7 +105,7 @@ export default function CustomerSelector({ loading, error, onRun, onNavigate }) 
   })
 
   return (
-    <div className="landing-container" style={{ maxWidth: 1040, margin: '0 auto', padding: '10px 0 40px 0' }}>
+    <div className="landing-container full-width-view" style={{ width: '100%', padding: '10px 0 40px 0' }}>
       
       {/* ── 1. Hero Section ── */}
       <section style={{ textAlign: 'center', marginBottom: 36, position: 'relative' }}>
@@ -129,7 +129,7 @@ export default function CustomerSelector({ loading, error, onRun, onNavigate }) 
         </h1>
 
         <p style={{
-          fontSize: 15, color: 'var(--text-secondary)', maxWidth: 640,
+          fontSize: 15, color: 'var(--text-secondary)', maxWidth: 760,
           margin: '0 auto', lineHeight: 1.6,
         }}>
           Combines empirical circadian diurnal baselines and pure Python anomaly rules with Google Gemini explainability. Zero hallucinated risk verdicts.
@@ -138,36 +138,37 @@ export default function CustomerSelector({ loading, error, onRun, onNavigate }) 
 
       {/* ── 2. Three Pillars Capability Hub ── */}
       <section style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20,
         marginBottom: 36,
       }}>
         {/* Card 1: Investigation Desk */}
         <div
           style={{
             background: 'var(--surface)', border: '1px solid var(--accent)',
-            borderRadius: 'var(--radius)', padding: 20, boxShadow: 'var(--shadow-sm)',
+            borderRadius: 'var(--radius)', padding: 22, boxShadow: 'var(--shadow-sm)',
             display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
           }}
         >
           <div>
             <div style={{
-              width: 40, height: 40, borderRadius: 'var(--radius-sm)',
+              width: 42, height: 42, borderRadius: 'var(--radius-sm)',
               background: 'var(--accent-light)', display: 'flex',
-              alignItems: 'center', justifyContent: 'center', marginBottom: 12,
+              alignItems: 'center', justifyContent: 'center', marginBottom: 14,
             }}>
               <Search size={20} color="var(--accent)" />
             </div>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
               Account Investigation Desk
             </h3>
-            <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Execute empirical $\mu + 3\sigma$ outlier, burst drainage, and odd-hours detection across historical streams.
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Execute empirical μ + 3σ outlier, burst drainage, and odd-hours detection across historical streams.
             </p>
           </div>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)', marginTop: 14, display: 'flex', alignItems: 'center', gap: 4 }}>
-            Select Profile Below <ArrowRight size={12} />
+          <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)', marginTop: 16, display: 'flex', alignItems: 'center', gap: 4 }}>
+            Select Profile Below <ArrowRight size={13} />
           </span>
         </div>
+
 
         {/* Card 2: Live Wire Surveillance */}
         <div
@@ -294,7 +295,11 @@ export default function CustomerSelector({ loading, error, onRun, onNavigate }) 
         </div>
 
         {/* Profiles Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+          gap: 16,
+        }}>
           {activeList.map(cust => {
             const details = PROFILE_DETAILS[cust.customer_id] || {
               badge: 'Custom Statement',

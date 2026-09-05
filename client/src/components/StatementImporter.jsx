@@ -102,7 +102,7 @@ export default function StatementImporter({ onStatementIngested }) {
   }
 
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto', padding: '20px 0' }}>
+    <div style={{ maxWidth: 860, margin: '0 auto', padding: '24px 0' }}>
       <div className="card" style={{ padding: 32 }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 24 }}>

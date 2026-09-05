@@ -66,7 +66,7 @@ export default function LiveWireSurveillance({ onInvestigateCustomer }) {
   }
 
   return (
-    <div className="live-wire-view" style={{ maxWidth: 960, margin: '0 auto', padding: '16px 0' }}>
+    <div className="live-wire-view" style={{ width: '100%', padding: '16px 0' }}>
       {/* Top Surveillance Cockpit Card */}
       <div className="card" style={{ padding: 24, marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
