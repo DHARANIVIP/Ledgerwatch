@@ -1,0 +1,111 @@
+transaction_id,date,time,description,payee,amount,channel
+TXN-C-0001,2024-01-03,12:46:28,Streaming service,WatchNow,40.0,UPI
+TXN-C-0004,2024-01-05,13:23:43,Bookstore,PageTurner,49.34,card
+TXN-C-0003,2024-01-05,14:34:15,Streaming service,WatchNow,40.0,card
+TXN-C-0002,2024-01-05,14:44:39,Bookstore,PageTurner,56.42,card
+TXN-C-0005,2024-01-07,19:32:33,Bookstore,PageTurner,51.98,card
+TXN-C-0006,2024-01-09,11:55:16,Phone bill,TeleLink,37.44,UPI
+TXN-C-0008,2024-01-10,10:18:05,Streaming service,WatchNow,40.0,UPI
+TXN-C-0007,2024-01-10,18:47:59,Streaming service,WatchNow,40.0,UPI
+TXN-C-0009,2024-01-11,11:56:27,Coffee,BeanBar,35.0,UPI
+TXN-C-0011,2024-01-11,18:37:24,Grocery run,QuickShop,30.35,UPI
+TXN-C-0010,2024-01-11,18:59:01,Phone bill,TeleLink,23.55,card
+TXN-C-0012,2024-01-12,17:59:06,Coffee,BeanBar,35.0,card
+TXN-C-0013,2024-01-16,16:59:53,Phone bill,TeleLink,50.0,card
+TXN-C-0014,2024-01-16,22:28:39,Streaming service,WatchNow,40.0,UPI
+TXN-C-0015,2024-01-19,13:56:09,Grocery run,QuickShop,39.73,card
+TXN-C-0016,2024-01-19,14:19:07,Grocery run,QuickShop,40.11,UPI
+TXN-C-0018,2024-01-19,14:45:09,Pharmacy,HealthPlus,45.15,card
+TXN-C-0017,2024-01-19,21:32:07,Phone bill,TeleLink,48.14,card
+TXN-C-0019,2024-01-21,18:37:36,Bookstore,PageTurner,56.17,card
+TXN-C-0020,2024-01-22,09:33:23,Phone bill,TeleLink,38.72,UPI
+TXN-C-0021,2024-01-23,07:24:55,Pharmacy,HealthPlus,56.39,card
+TXN-C-0022,2024-01-24,18:16:47,Grocery run,QuickShop,42.13,UPI
+TXN-C-0023,2024-01-31,18:15:46,Coffee,BeanBar,35.0,UPI
+TXN-C-0024,2024-02-04,17:08:02,Pharmacy,HealthPlus,41.75,card
+TXN-C-0025,2024-02-05,12:56:49,Pharmacy,HealthPlus,37.64,card
+TXN-C-0028,2024-02-07,08:20:59,Grocery run,QuickShop,23.5,card
+TXN-C-0026,2024-02-07,12:55:08,Streaming service,WatchNow,40.0,UPI
+TXN-C-0027,2024-02-07,21:02:18,Streaming service,WatchNow,40.0,UPI
+TXN-C-0029,2024-02-08,22:38:02,Pharmacy,HealthPlus,39.64,UPI
+TXN-C-0030,2024-02-09,08:57:41,Coffee,BeanBar,35.0,card
+TXN-C-0031,2024-02-09,18:43:56,Coffee,BeanBar,30.64,card
+TXN-C-0032,2024-02-10,19:40:11,Streaming service,WatchNow,40.0,card
+TXN-C-0033,2024-02-11,15:55:05,Streaming service,WatchNow,40.0,card
+TXN-C-0034,2024-02-12,12:47:18,Grocery run,QuickShop,36.61,card
+TXN-C-0035,2024-02-13,16:39:28,Grocery run,QuickShop,44.89,card
+TXN-C-0036,2024-02-14,18:28:02,Phone bill,TeleLink,20.0,card
+TXN-C-0037,2024-02-16,15:40:50,Pharmacy,HealthPlus,66.25,UPI
+TXN-C-0038,2024-02-16,19:23:32,Grocery run,QuickShop,41.29,UPI
+TXN-C-0039,2024-02-16,21:31:08,Grocery run,QuickShop,54.65,UPI
+TXN-C-0040,2024-02-22,18:23:24,Phone bill,TeleLink,50.0,UPI
+TXN-C-0041,2024-02-24,21:41:23,Pharmacy,HealthPlus,61.29,card
+TXN-C-0043,2024-02-25,07:47:11,Phone bill,TeleLink,47.45,card
+TXN-C-0042,2024-02-25,18:25:20,Grocery run,QuickShop,39.8,card
+TXN-C-0044,2024-02-26,10:38:49,Pharmacy,HealthPlus,51.71,card
+TXN-C-0046,2024-03-01,09:44:11,Phone bill,TeleLink,50.0,card
+TXN-C-0045,2024-03-01,16:52:58,Streaming service,WatchNow,40.0,card
+TXN-C-0047,2024-03-02,17:42:22,Grocery run,QuickShop,39.27,UPI
+TXN-C-0048,2024-03-03,16:54:10,Pharmacy,HealthPlus,37.03,UPI
+TXN-C-0049,2024-03-04,10:12:50,Coffee,BeanBar,35.0,UPI
+TXN-C-0050,2024-03-05,07:23:35,Phone bill,TeleLink,20.56,card
+TXN-C-0051,2024-03-07,11:39:56,Bookstore,PageTurner,60.0,UPI
+TXN-C-0053,2024-03-08,17:50:04,Pharmacy,HealthPlus,44.95,card
+TXN-C-0052,2024-03-08,22:46:26,Grocery run,QuickShop,41.37,card
+TXN-C-0054,2024-03-09,18:08:56,Bookstore,PageTurner,36.81,UPI
+TXN-C-0055,2024-03-10,08:56:07,Phone bill,TeleLink,44.42,UPI
+TXN-C-0056,2024-03-10,17:59:45,Coffee,BeanBar,35.0,UPI
+TXN-C-0057,2024-03-11,16:54:05,Coffee,BeanBar,35.0,card
+TXN-C-0059,2024-03-12,12:37:37,Pharmacy,HealthPlus,46.07,UPI
+TXN-C-0058,2024-03-12,15:08:40,Phone bill,TeleLink,50.0,card
+TXN-C-0061,2024-03-13,15:50:13,Grocery run,QuickShop,34.87,card
+TXN-C-0060,2024-03-13,17:53:59,Phone bill,TeleLink,27.65,UPI
+TXN-C-0062,2024-03-14,22:56:40,Pharmacy,HealthPlus,40.88,card
+TXN-C-0110,2024-03-15,02:45:10,Emergency pharmacy purchase,HealthPlus,35.0,UPI
+TXN-C-0063,2024-03-16,22:15:51,Streaming service,WatchNow,40.0,card
+TXN-C-0064,2024-03-17,08:35:28,Coffee,BeanBar,35.0,card
+TXN-C-0065,2024-03-17,17:49:09,Bookstore,PageTurner,56.8,card
+TXN-C-0066,2024-03-17,18:42:08,Streaming service,WatchNow,40.0,card
+TXN-C-0068,2024-03-19,11:33:03,Coffee,BeanBar,35.0,card
+TXN-C-0070,2024-03-19,17:12:48,Coffee,BeanBar,35.0,UPI
+TXN-C-0067,2024-03-19,17:15:29,Pharmacy,HealthPlus,45.65,UPI
+TXN-C-0069,2024-03-19,20:15:55,Bookstore,PageTurner,49.87,UPI
+TXN-C-0071,2024-03-20,21:31:56,Bookstore,PageTurner,60.0,card
+TXN-C-0073,2024-03-21,08:03:18,Phone bill,TeleLink,50.0,card
+TXN-C-0072,2024-03-21,19:46:29,Bookstore,PageTurner,59.4,UPI
+TXN-C-0074,2024-03-21,22:18:34,Pharmacy,HealthPlus,43.67,UPI
+TXN-C-0075,2024-03-22,15:53:23,Grocery run,QuickShop,56.72,card
+TXN-C-0076,2024-03-23,08:48:35,Coffee,BeanBar,27.57,UPI
+TXN-C-0077,2024-03-23,09:24:32,Coffee,BeanBar,35.0,card
+TXN-C-0078,2024-03-26,10:34:06,Pharmacy,HealthPlus,43.11,card
+TXN-C-0079,2024-03-26,17:35:23,Coffee,BeanBar,28.74,UPI
+TXN-C-0080,2024-03-27,19:32:02,Phone bill,TeleLink,50.0,UPI
+TXN-C-0082,2024-03-30,11:20:59,Phone bill,TeleLink,22.05,card
+TXN-C-0081,2024-03-30,17:55:30,Grocery run,QuickShop,23.28,card
+TXN-C-0083,2024-04-02,16:48:21,Phone bill,TeleLink,49.35,card
+TXN-C-0084,2024-04-02,22:52:01,Streaming service,WatchNow,40.0,card
+TXN-C-0085,2024-04-03,20:37:19,Coffee,BeanBar,35.0,UPI
+TXN-C-0086,2024-04-05,14:53:03,Pharmacy,HealthPlus,53.9,card
+TXN-C-0087,2024-04-06,19:09:52,Phone bill,TeleLink,50.0,UPI
+TXN-C-0088,2024-04-08,10:12:01,Grocery run,QuickShop,53.4,card
+TXN-C-0089,2024-04-11,20:52:13,Coffee,BeanBar,35.0,card
+TXN-C-0090,2024-04-13,22:55:54,Pharmacy,HealthPlus,44.12,UPI
+TXN-C-0092,2024-04-16,12:44:58,Pharmacy,HealthPlus,48.55,card
+TXN-C-0091,2024-04-16,13:47:20,Streaming service,WatchNow,40.0,card
+TXN-C-0093,2024-04-20,15:49:30,Pharmacy,HealthPlus,31.83,UPI
+TXN-C-0094,2024-04-20,16:37:19,Phone bill,TeleLink,49.09,card
+TXN-C-0096,2024-04-21,15:18:07,Pharmacy,HealthPlus,48.31,card
+TXN-C-0095,2024-04-21,22:40:30,Streaming service,WatchNow,40.0,card
+TXN-C-0097,2024-04-24,11:18:02,Bookstore,PageTurner,48.34,card
+TXN-C-0101,2024-04-25,10:43:21,Streaming service,WatchNow,40.0,card
+TXN-C-0100,2024-04-25,14:37:03,Phone bill,TeleLink,43.7,UPI
+TXN-C-0099,2024-04-25,15:59:35,Phone bill,TeleLink,34.18,card
+TXN-C-0098,2024-04-25,21:50:16,Streaming service,WatchNow,20.0,card
+TXN-C-0102,2024-04-26,11:00:35,Grocery run,QuickShop,48.11,UPI
+TXN-C-0103,2024-04-27,22:30:41,Bookstore,PageTurner,48.63,UPI
+TXN-C-0105,2024-04-28,08:58:58,Streaming service,WatchNow,40.0,UPI
+TXN-C-0104,2024-04-28,08:59:49,Coffee,BeanBar,35.0,UPI
+TXN-C-0107,2024-04-29,12:59:47,Bookstore,PageTurner,25.81,card
+TXN-C-0106,2024-04-29,12:59:58,Bookstore,PageTurner,41.24,UPI
+TXN-C-0108,2024-04-30,10:59:21,Grocery run,QuickShop,28.58,card
+TXN-C-0109,2024-04-30,22:56:08,Bookstore,PageTurner,51.43,card

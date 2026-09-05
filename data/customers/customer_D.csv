@@ -1,0 +1,143 @@
+transaction_id,date,time,description,payee,amount,channel
+TXN-D-0002,2024-01-01,12:29:43,Coffee shop,DailyBrews,32.79,card
+TXN-D-0001,2024-01-01,21:00:48,Bus fare,CityBus,20.0,UPI
+TXN-D-0003,2024-01-02,16:27:34,Top-up,MobileWallet,16.2,UPI
+TXN-D-0004,2024-01-03,21:14:15,Streaming,MusicStream,15.0,UPI
+TXN-D-0005,2024-01-07,13:09:17,Streaming,MusicStream,15.0,UPI
+TXN-D-0006,2024-01-07,22:56:46,Bus fare,CityBus,20.0,UPI
+TXN-D-0007,2024-01-09,08:51:42,Coffee shop,DailyBrews,22.8,card
+TXN-D-0008,2024-01-10,17:49:59,Streaming,MusicStream,15.0,UPI
+TXN-D-0009,2024-01-11,11:13:04,Coffee shop,DailyBrews,23.19,card
+TXN-D-0010,2024-01-13,17:02:28,Coffee shop,DailyBrews,30.07,card
+TXN-D-0011,2024-01-14,18:45:55,Lunch,QuickBites,29.19,card
+TXN-D-0012,2024-01-15,11:47:02,Coffee shop,DailyBrews,23.16,card
+TXN-D-0013,2024-01-15,15:14:34,Streaming,MusicStream,14.86,UPI
+TXN-D-0015,2024-01-16,10:32:18,Coffee shop,DailyBrews,32.42,card
+TXN-D-0014,2024-01-16,20:55:49,Bus fare,CityBus,20.0,UPI
+TXN-D-0017,2024-01-19,13:36:38,Lunch,QuickBites,18.96,card
+TXN-D-0016,2024-01-19,21:58:46,Bus fare,CityBus,20.0,UPI
+TXN-D-0018,2024-01-21,21:20:15,Top-up,MobileWallet,19.6,UPI
+TXN-D-0019,2024-01-22,22:09:42,Snack purchase,CornerStore,10.0,card
+TXN-D-0020,2024-01-23,11:26:19,Lunch,QuickBites,30.0,card
+TXN-D-0021,2024-01-25,08:35:37,Snack purchase,CornerStore,25.0,card
+TXN-D-0022,2024-01-25,22:11:40,Top-up,MobileWallet,21.04,UPI
+TXN-D-0023,2024-01-27,14:35:31,Top-up,MobileWallet,23.4,UPI
+TXN-D-0024,2024-01-29,13:41:42,Coffee shop,DailyBrews,10.0,card
+TXN-D-0025,2024-01-30,20:33:20,Streaming,MusicStream,15.0,UPI
+TXN-D-0027,2024-01-31,14:11:48,Snack purchase,CornerStore,25.0,card
+TXN-D-0026,2024-01-31,14:26:09,Top-up,MobileWallet,31.34,UPI
+TXN-D-0028,2024-02-02,15:15:54,Lunch,QuickBites,24.31,card
+TXN-D-0029,2024-02-03,12:54:45,Bus fare,CityBus,20.0,UPI
+TXN-D-0030,2024-02-04,20:29:58,Bus fare,CityBus,20.0,UPI
+TXN-D-0033,2024-02-07,12:13:21,Bus fare,CityBus,20.0,UPI
+TXN-D-0032,2024-02-07,16:08:24,Lunch,QuickBites,10.35,card
+TXN-D-0031,2024-02-07,16:26:26,Coffee shop,DailyBrews,20.03,card
+TXN-D-0034,2024-02-08,09:59:28,Top-up,MobileWallet,24.82,UPI
+TXN-D-0036,2024-02-10,08:17:24,Bus fare,CityBus,11.91,UPI
+TXN-D-0035,2024-02-10,09:34:46,Snack purchase,CornerStore,25.0,card
+TXN-D-0037,2024-02-11,17:38:02,Top-up,MobileWallet,21.14,UPI
+TXN-D-0038,2024-02-12,11:51:48,Coffee shop,DailyBrews,21.47,card
+TXN-D-0040,2024-02-12,15:13:55,Bus fare,CityBus,20.0,UPI
+TXN-D-0039,2024-02-12,19:42:35,Lunch,QuickBites,14.29,card
+TXN-D-0041,2024-02-13,12:58:00,Snack purchase,CornerStore,25.0,card
+TXN-D-0042,2024-02-14,22:12:47,Bus fare,CityBus,19.97,UPI
+TXN-D-0044,2024-02-15,19:38:45,Bus fare,CityBus,19.76,UPI
+TXN-D-0043,2024-02-15,19:48:30,Coffee shop,DailyBrews,35.0,card
+TXN-D-0045,2024-02-16,14:58:15,Bus fare,CityBus,18.87,UPI
+TXN-D-0046,2024-02-17,13:49:18,Lunch,QuickBites,18.67,card
+TXN-D-0047,2024-02-18,15:34:41,Streaming,MusicStream,15.0,UPI
+TXN-D-0048,2024-02-19,12:16:23,Snack purchase,CornerStore,18.09,card
+TXN-D-0050,2024-02-20,20:46:30,Coffee shop,DailyBrews,20.66,card
+TXN-D-0051,2024-02-20,22:13:23,Snack purchase,CornerStore,22.4,card
+TXN-D-0049,2024-02-20,22:31:29,Lunch,QuickBites,11.96,card
+TXN-D-0052,2024-02-21,14:02:36,Snack purchase,CornerStore,10.0,card
+TXN-D-0053,2024-02-22,19:09:01,Bus fare,CityBus,20.0,UPI
+TXN-D-0054,2024-02-23,16:59:37,Snack purchase,CornerStore,22.29,card
+TXN-D-0055,2024-02-23,19:26:18,Lunch,QuickBites,25.6,card
+TXN-D-0056,2024-02-24,11:21:14,Bus fare,CityBus,20.0,UPI
+TXN-D-0057,2024-02-25,17:53:15,Streaming,MusicStream,15.0,UPI
+TXN-D-0059,2024-02-29,12:48:52,Snack purchase,CornerStore,16.85,card
+TXN-D-0058,2024-02-29,16:41:43,Streaming,MusicStream,15.0,UPI
+TXN-D-0060,2024-03-01,19:41:47,Streaming,MusicStream,15.0,UPI
+TXN-D-0061,2024-03-02,15:10:46,Streaming,MusicStream,15.0,UPI
+TXN-D-0062,2024-03-04,10:08:46,Snack purchase,CornerStore,13.4,card
+TXN-D-0063,2024-03-04,15:11:58,Lunch,QuickBites,30.0,card
+TXN-D-0064,2024-03-05,18:03:33,Lunch,QuickBites,19.82,card
+TXN-D-0065,2024-03-06,21:54:04,Coffee shop,DailyBrews,17.61,card
+TXN-D-0066,2024-03-08,08:48:00,Top-up,MobileWallet,10.0,UPI
+TXN-D-0067,2024-03-10,10:53:40,Streaming,MusicStream,15.0,UPI
+TXN-D-0070,2024-03-13,08:39:40,Snack purchase,CornerStore,25.0,card
+TXN-D-0068,2024-03-13,09:45:09,Bus fare,CityBus,15.08,UPI
+TXN-D-0069,2024-03-13,11:32:29,Coffee shop,DailyBrews,22.2,card
+TXN-D-0071,2024-03-14,22:39:58,Top-up,MobileWallet,15.19,UPI
+TXN-D-0072,2024-03-16,18:31:01,Streaming,MusicStream,15.0,UPI
+TXN-D-0074,2024-03-17,08:33:46,Coffee shop,DailyBrews,10.0,card
+TXN-D-0075,2024-03-17,16:18:01,Snack purchase,CornerStore,16.33,card
+TXN-D-0073,2024-03-17,16:35:26,Coffee shop,DailyBrews,32.67,card
+TXN-D-0076,2024-03-17,21:44:43,Lunch,QuickBites,15.67,card
+TXN-D-0077,2024-03-18,20:58:11,Streaming,MusicStream,15.0,UPI
+TXN-D-0078,2024-03-19,22:06:33,Coffee shop,DailyBrews,21.67,card
+TXN-D-0079,2024-03-20,11:12:39,Bus fare,CityBus,14.57,UPI
+TXN-D-0080,2024-03-20,12:52:22,Lunch,QuickBites,17.42,card
+TXN-D-0082,2024-03-22,14:29:36,Snack purchase,CornerStore,19.54,card
+TXN-D-0081,2024-03-22,20:25:05,Snack purchase,CornerStore,16.59,card
+TXN-D-0083,2024-03-23,19:14:19,Bus fare,CityBus,20.0,UPI
+TXN-D-0084,2024-03-23,21:54:05,Top-up,MobileWallet,28.37,UPI
+TXN-D-0085,2024-03-26,21:41:48,Top-up,MobileWallet,29.39,UPI
+TXN-D-0086,2024-03-27,09:25:24,Coffee shop,DailyBrews,26.58,card
+TXN-D-0087,2024-03-27,16:30:03,Streaming,MusicStream,15.0,UPI
+TXN-D-0088,2024-03-29,08:44:10,Top-up,MobileWallet,21.98,UPI
+TXN-D-0089,2024-03-31,15:54:27,Coffee shop,DailyBrews,35.0,card
+TXN-D-0090,2024-04-01,20:21:36,Top-up,MobileWallet,29.1,UPI
+TXN-D-0092,2024-04-03,11:13:57,Coffee shop,DailyBrews,33.07,card
+TXN-D-0091,2024-04-03,22:33:58,Coffee shop,DailyBrews,18.92,card
+TXN-D-0093,2024-04-06,22:36:30,Top-up,MobileWallet,19.28,UPI
+TXN-D-0094,2024-04-07,08:59:04,Snack purchase,CornerStore,17.32,card
+TXN-D-0095,2024-04-08,22:17:57,Top-up,MobileWallet,31.77,UPI
+TXN-D-0096,2024-04-10,17:42:02,Lunch,QuickBites,12.83,card
+TXN-D-0097,2024-04-10,22:54:20,Bus fare,CityBus,10.0,UPI
+TXN-D-0098,2024-04-11,11:37:09,Coffee shop,DailyBrews,28.59,card
+TXN-D-0099,2024-04-11,21:25:59,Top-up,MobileWallet,22.19,UPI
+TXN-D-0100,2024-04-12,12:10:36,Coffee shop,DailyBrews,22.89,card
+TXN-D-0103,2024-04-13,14:48:47,Snack purchase,CornerStore,18.79,card
+TXN-D-0101,2024-04-13,17:53:54,Bus fare,CityBus,19.47,UPI
+TXN-D-0102,2024-04-13,18:57:34,Streaming,MusicStream,15.0,UPI
+TXN-D-0104,2024-04-14,20:44:46,Bus fare,CityBus,17.62,UPI
+TXN-D-0105,2024-04-15,16:47:22,Coffee shop,DailyBrews,19.33,card
+TXN-D-0106,2024-04-16,09:27:14,Coffee shop,DailyBrews,19.11,card
+TXN-D-0109,2024-04-18,08:40:17,Snack purchase,CornerStore,10.0,card
+TXN-D-0107,2024-04-18,13:38:49,Coffee shop,DailyBrews,16.2,card
+TXN-D-0108,2024-04-18,17:25:49,Lunch,QuickBites,18.18,card
+TXN-D-0110,2024-04-20,15:14:22,Streaming,MusicStream,15.0,UPI
+TXN-D-0111,2024-04-21,14:27:11,Lunch,QuickBites,24.73,card
+TXN-D-0112,2024-04-21,17:42:24,Top-up,MobileWallet,21.41,UPI
+TXN-D-0113,2024-04-22,20:39:18,Coffee shop,DailyBrews,23.66,card
+TXN-D-0114,2024-04-23,10:17:09,Netbanking fund transfer,WealthBridge_Investments,690.27,netbanking
+TXN-D-0116,2024-04-23,20:24:20,Netbanking fund transfer,AlphaCapital_Fund,834.03,netbanking
+TXN-D-0115,2024-04-23,20:50:40,Netbanking fund transfer,PrimeHoldings_Co,659.81,netbanking
+TXN-D-0117,2024-04-24,10:00:19,Netbanking fund transfer,WealthBridge_Investments,925.28,netbanking
+TXN-D-0119,2024-04-24,11:05:11,Netbanking fund transfer,WealthBridge_Investments,800.06,netbanking
+TXN-D-0118,2024-04-24,14:48:17,Netbanking fund transfer,PrimeHoldings_Co,794.87,netbanking
+TXN-D-0120,2024-04-24,16:35:35,Netbanking fund transfer,PrimeHoldings_Co,697.99,netbanking
+TXN-D-0121,2024-04-25,09:05:22,Netbanking fund transfer,WealthBridge_Investments,869.32,netbanking
+TXN-D-0123,2024-04-25,15:00:18,Netbanking fund transfer,GlobalAssets_LLC,713.29,netbanking
+TXN-D-0124,2024-04-25,15:49:05,Netbanking fund transfer,PrimeHoldings_Co,748.9,netbanking
+TXN-D-0122,2024-04-25,18:38:50,Netbanking fund transfer,WealthBridge_Investments,665.47,netbanking
+TXN-D-0127,2024-04-26,11:04:10,Netbanking fund transfer,PrimeHoldings_Co,640.19,netbanking
+TXN-D-0126,2024-04-26,13:19:17,Netbanking fund transfer,AlphaCapital_Fund,684.84,netbanking
+TXN-D-0125,2024-04-26,19:24:10,Netbanking fund transfer,AlphaCapital_Fund,777.66,netbanking
+TXN-D-0131,2024-04-27,10:08:19,Netbanking fund transfer,PrimeHoldings_Co,654.03,netbanking
+TXN-D-0129,2024-04-27,14:16:15,Netbanking fund transfer,WealthBridge_Investments,701.02,netbanking
+TXN-D-0128,2024-04-27,15:19:30,Netbanking fund transfer,GlobalAssets_LLC,813.72,netbanking
+TXN-D-0130,2024-04-27,18:39:12,Netbanking fund transfer,PrimeHoldings_Co,803.43,netbanking
+TXN-D-0133,2024-04-28,14:28:21,Netbanking fund transfer,PrimeHoldings_Co,786.41,netbanking
+TXN-D-0132,2024-04-28,14:53:39,Netbanking fund transfer,PrimeHoldings_Co,768.4,netbanking
+TXN-D-0134,2024-04-28,19:38:08,Netbanking fund transfer,PrimeHoldings_Co,618.14,netbanking
+TXN-D-0137,2024-04-29,13:47:44,Netbanking fund transfer,GlobalAssets_LLC,622.18,netbanking
+TXN-D-0136,2024-04-29,14:11:25,Netbanking fund transfer,PrimeHoldings_Co,647.05,netbanking
+TXN-D-0135,2024-04-29,18:44:12,Netbanking fund transfer,GlobalAssets_LLC,717.81,netbanking
+TXN-D-0138,2024-04-29,18:50:15,Netbanking fund transfer,PrimeHoldings_Co,946.49,netbanking
+TXN-D-0139,2024-04-30,13:52:50,Netbanking fund transfer,PrimeHoldings_Co,712.82,netbanking
+TXN-D-0140,2024-04-30,14:07:59,Netbanking fund transfer,PrimeHoldings_Co,883.46,netbanking
+TXN-D-0141,2024-04-30,18:34:11,Netbanking fund transfer,AlphaCapital_Fund,689.12,netbanking
+TXN-D-0142,2024-04-30,20:29:45,Netbanking fund transfer,WealthBridge_Investments,838.53,netbanking

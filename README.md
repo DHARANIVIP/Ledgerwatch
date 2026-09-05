@@ -1,118 +1,270 @@
-LedgerWatch — Transaction Risk Investigation AssistantAn enterprise-grade, deterministic, and explainable transaction risk investigation assistant built for a bank's fraud desk. LedgerWatch evaluates multi-month customer transaction streams against individualized behavioral baselines and deterministic risk rules, leveraging Google Gemini to generate clear, non-accusatory investigation reports for human operators.Architecture & System Flow+-----------------------------------------------------------------------------------+
-|                                 Single Host (:8000)                               |
+TRACK_ID=PS06
+
+# LedgerWatch — Transaction Risk Investigation Assistant
+
+> **Track:** PS06 — Transaction Risk Investigation Assistant  
+> **Repository:** [https://github.com/DHARANIVIP/Ledgerwatch.git](https://github.com/DHARANIVIP/Ledgerwatch.git)  
+> **Stack:** Python 3.10+ / FastAPI / SQLite / React 18 / Vite / Tailwind CSS / Google Gemini 2.5 Flash / Supabase (PostgreSQL)
+
+---
+
+## Overview
+
+**LedgerWatch** is an enterprise-grade transaction risk investigation platform engineered for banking fraud and risk operations desks. It bridges the gap between deterministic, auditable anomaly detection and intelligent human-readable narration.
+
+Unlike naive AI solutions that delegate risk scoring directly to large language models, LedgerWatch follows a **Strict Separation of Concerns**:
+1. **Mathematical & Deterministic Detection (Zero-LLM):** All risk evaluations, threshold calculations, and verdicts are computed deterministically in pure Python using customer-specific historical baselines.
+2. **Intelligent Explainability Layer:** Google Gemini (Gemini 2.5 Flash) is used strictly for narration—translating complex statistical deviations and multi-transaction bursts into clear, actionable, non-accusatory findings for human investigators.
+3. **Graceful Fallback:** If `GEMINI_API_KEY` is not provided or network is offline, a deterministic templating fallback seamlessly takes over with zero downtime.
+4. **End-to-End Traceability & Auditability:** Backed by SQLite (and Supabase PostgreSQL schema), every finding links directly to immutable transaction records.
+
+---
+
+## Architecture & System Flow
+
+```
++-----------------------------------------------------------------------------------+
+|                             Single Host (:8000)                                   |
 |                                                                                   |
 |   +---------------------------------------------------------------------------+   |
-|   |                        Client (React 19 Dashboard)                        |   |
+|   |                        Client (React 18 Dashboard)                        |   |
 |   |   - Account Selector  - Investigation Trigger  - Traceability Modal       |   |
-|   |   - Verdict Banner    - Ranked Findings Grid   - Fallback State Displays  |   |
+|   |   - Verdict Banner    - Ranked Findings Grid   - DB & Audit Inspector     |   |
 |   +---------------------------------------------------------------------------+   |
 |                                         |                                         |
-|                                (REST / JSON IPC)                                  |
+|                                (REST / JSON API)                                  |
 |                                         v                                         |
 |   +---------------------------------------------------------------------------+   |
 |   |                          Server (FastAPI Engine)                          |   |
 |   |                                                                           |   |
-|   |   1. Ingestion Engine                                                     |   |
-|   |      └── data/customers/*.csv (CSV parsing, malformed row sanitizer)     |   |
+|   |   1. Ingestion & Persistence (SQLite / Supabase)                          |   |
+|   |      └── Auto-seed from CSVs -> customers, transactions, findings         |   |
 |   |                                                                           |   |
 |   |   2. Behavioral Profiler (baseline.py)                                    |   |
-|   |      └── μ, σ, Diurnal Windows, Known Payee Maps (>=14d span check)       |   |
+|   |      └── Computes μ, σ, diurnal active windows, counterparty baselines    |   |
 |   |                                                                           |   |
 |   |   3. Deterministic Risk Core (rules.py)                                   |   |
 |   |      ├── Rule 1: Large Outlier Transfer (Amount > μ + 3σ)                 |   |
-|   |      ├── Rule 2: Rapid Burst to New Payee (>=3 tx / 7d to payee <=14d)    |   |
-|   |      ├── Rule 3: Off-Hours Initiation (Outside 95% diurnal boundary)     |   |
+|   |      ├── Rule 2: Rapid Burst to New Payee (≥3 tx / 7d to payee ≤14d)     |   |
+|   |      ├── Rule 3: Off-Hours Initiation (Outside 95% diurnal boundary)      |   |
 |   |      └── Rule 4: Structural Pattern Break (Velocity/volume shift > 2.5x)  |   |
 |   |                                                                           |   |
 |   |   4. Aggregator & Prioritizer (correlate.py & prioritize.py)              |   |
-|   |      └── Deduplication -> Metric Distance Scoring (1 - 100)              |   |
+|   |      └── Hit Deduplication -> Multi-Factor Severity Scoring (1 - 100)     |   |
 |   |                                                                           |   |
 |   |   5. Explainability Layer (gemini_client.py & narrate.py)                 |   |
 |   |      ├── Primary: Google GenAI (gemini-2.5-flash) via GEMINI_API_KEY      |   |
 |   |      ├── Secondary: Pure Python Deterministic Template Fallback           |   |
-|   |      └── Guardrail: Regex Safety Filter (Strikes "fraud"/"theft" terms)   |   |
+|   |      └── Guardrail: Regex Safety Filter (Neutralizes accusatory terms)    |   |
 |   +---------------------------------------------------------------------------+   |
 +-----------------------------------------------------------------------------------+
-Technology Stack & Design SystemCore Engine & BackendFramework: FastAPI (Python 3.10+) mounted with Uvicorn ASGIAnalytical Compute: Pandas & NumPy (Vectorized baseline computing and outlier detection)Validation Engine: Pydantic v2 (Strict report schema serialization)External AI Integration: google-genai SDK (gemini-2.5-flash)Presentation LayerFramework: React 19 (scaffolded via Vite)UI Components & Icons: Lucide ReactDesign Tokens: Slate & Crimson/Emerald Design SystemHigh-visibility verdict status banners (--verdict-attention, --verdict-clean)Glassmorphic finding metric cards with CSS backdrop filtersMonospace transaction audit drawers (--font-mono)Sub-90-second asset delivery served directly via FastAPI StaticFilesCore Engineering Patterns1. Zero-LLM Deterministic Rule Core (server/rules.py)LLMs are never used to decide whether an anomaly exists. Every risk detection runs purely through isolated, unit-tested deterministic Python routines:Pythondef rule_large_transfer(tx: pd.Series, baseline: CustomerBaseline) -> Optional[RuleHit]:
-    threshold = baseline.amount_mean + (3.0 * baseline.amount_std)
-    if tx["amount"] > threshold:
-        return RuleHit(
-            rule_id="RULE_LARGE_TRANSFER",
-            transaction_id=tx["transaction_id"],
-            deviation_magnitude=(tx["amount"] - baseline.amount_mean) / baseline.amount_std,
-            observed=f"${tx['amount']:,.2f}",
-            expected=f"< ${threshold:,.2f} (mean + 3σ)"
-        )
-    return None
-2. Idempotent Hit Deduplication (server/correlate.py)Correlated anomalies—such as a 4-part rapid fund drainage burst to a novel counterparty—are unified into a single investigator-facing finding entity rather than fragmenting into multiple duplicate alerts:Pythondef correlate_hits(hits: List[RuleHit]) -> List[Finding]:
-    grouped = defaultdict(list)
-    for hit in hits:
-        grouped[(hit.rule_id, hit.payee_target)].append(hit)
-        
-    return [
-        Finding(
-            finding_id=f"FND-{idx+1:03d}",
-            rule_name=group_key[0],
-            transaction_ids=[h.transaction_id for h in matched_hits],
-            observed_metric=matched_hits[-1].observed,
-            baseline_metric=matched_hits[-1].expected
-        )
-        for idx, (group_key, matched_hits) in enumerate(grouped.items())
-    ]
-3. Graceful LLM Fallback & Self-Healing Narrator (server/gemini_client.py)If the network drops, rate limits trigger, or GEMINI_API_KEY is missing, the platform automatically switches to a deterministic reporting template without crashing:Pythondef generate_investigation_narrative(finding: dict) -> str:
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=construct_safe_prompt(finding),
-            config=types.GenerateContentConfig(timeout=8.0)
-        )
-        return sanitize_safety_language(response.text)
-    except Exception:
-        return (
-            f"Rule {finding['rule_name']} triggered for transaction(s) {finding['transaction_ids']}. "
-            f"Observed value of {finding['observed_value']} deviated from baseline expectation of "
-            f"{finding['baseline_value']}. Investigator should cross-reference counterparty registration."
-        )
-4. Non-Accusatory Post-Generation Guardrail (server/narrate.py)To ensure compliance with regulatory standards, an automated post-generation regex filter strips accusatory claims of illegality before reports reach investigator screens:PythonBANNED_REGEX = re.compile(r"\b(fraud|fraudulent|theft|criminal|stolen|scam)\b", re.IGNORECASE)
+```
 
-def sanitize_safety_language(text: str) -> str:
-    return BANNED_REGEX.sub("flagged pattern", text)
-Getting StartedPrerequisitesPython 3.10 or higherModern Web Browser (Chrome, Edge, Firefox, Safari)Valid Google Gemini API KeyInstallationClone the repository and move into the project directory:Bashgit clone https://github.com/your-org/ledgerwatch.git
-cd ledgerwatch
-Install the unified Python environment dependencies:Bashpip install -r requirements.txt
-Environment ConfigurationConfigure your Gemini API Key in your current shell:Bash# macOS / Linux
-export GEMINI_API_KEY="your_api_key_here"
+---
 
-# Windows Command Prompt
-set GEMINI_API_KEY=your_api_key_here
+## Directory Layout
 
-# Windows PowerShell
-$env:GEMINI_API_KEY="your_api_key_here"
-Running the ApplicationStart the combined API and dashboard interface using the single mandatory start command:Bashpython app.py
-Local Server Interface: http://localhost:8000Startup Benchmark: Sub-5 seconds cold start (meets the 90-second hackathon constraint)Performance: Investigation pipeline completes in < 3 seconds per customer historySynthetic Dataset ReferenceDatasets are generated programmatically via python -m server.data_gen and reside under data/customers/:Dataset IdentifierBehavioral ProfileDiagnostic ProfileOutput Verdictcustomer_A.csvBalanced Salary, Utilities, GroceryNormal diurnal transactions, consistent ticket sizenothing_flaggedcustomer_B.csvSudden Drain via Unseen PayeeMultiple rapid payments, odd-hour access (03:15 AM), amount > 3σattention_neededcustomer_C.csvRegular Profile with Outlier EventConsistent history across 5 months; isolated single 02:45 AM accessattention_needed (Low Severity)customer_D.csvAccount Turnover Velocity ShiftSustained multi-day transition from low card volume to high netbanking transfersattention_needed (Pattern Break)API ReferenceLocal Endpoints1. Retrieve Available Customer ProfilesHTTPGET /api/customers
-Response:JSON[
-  "customer_A",
-  "customer_B",
-  "customer_C",
-  "customer_D"
-]
-2. Execute Risk InvestigationHTTPGET /api/investigate/{customer_id}
-Response Schema:JSON{
+```
+Ledgerwatch/
+├── app.py                     # Root entrypoint: FastAPI server + serves client/dist SPA
+├── requirements.txt           # Python dependencies
+├── README.md                  # Comprehensive project documentation
+├── .gitignore                 # Excludes caches, node_modules, and binary databases
+├── data/
+│   ├── customers/
+│   │   ├── customer_A.csv     # 100% Routine transactions — clean baseline
+│   │   ├── customer_B.csv     # Suspicious: burst + large transfer + odd-hours
+│   │   ├── customer_C.csv     # Borderline: single isolated off-hours hit
+│   │   └── customer_D.csv     # Pattern break: sudden shift in velocity & volume
+│   └── schema.md              # Transaction schema specifications
+├── database/
+│   └── .gitkeep               # Preserves database directory for SQLite
+├── server/
+│   ├── __init__.py
+│   ├── database.py            # SQLite connection manager, schema setup, WAL mode
+│   ├── repository.py          # Data access layer for customers, txns, findings
+│   ├── seed_database.py       # Seeds SQLite from CSV datasets on startup
+│   ├── data_gen.py            # Generates synthetic customer datasets
+│   ├── baseline.py            # Customer-specific behavioral profiler
+│   ├── rules.py               # 4 pure deterministic detection rules (No LLM)
+│   ├── correlate.py           # Groups related hits into cohesive findings
+│   ├── prioritize.py          # Ranks findings by deviation severity (1–100)
+│   ├── gemini_client.py       # Google GenAI wrapper with automatic fallback
+│   ├── narrate.py             # Prompt builder + post-generation safety guardrails
+│   ├── models.py              # Pydantic data schemas
+│   └── report.py              # Orchestrates the full end-to-end investigation
+├── supabase/
+│   ├── schema.sql             # Full PostgreSQL schema with RLS & indexes
+│   └── seed.sql               # PostgreSQL seed data
+└── client/                    # React 18 + Vite + Tailwind CSS Frontend
+    ├── package.json
+    ├── vite.config.js
+    ├── index.html
+    ├── src/
+    │   ├── App.jsx            # Main dashboard container
+    │   ├── main.jsx           # React DOM root
+    │   └── components/
+    │       ├── CustomerSelector.jsx # Customer account selector
+    │       ├── VerdictBanner.jsx    # Dynamic verdict banner
+    │       ├── FindingCard.jsx      # Glassmorphic finding breakdown
+    │       └── TxModal.jsx          # Row-level transaction audit drill-down
+    └── dist/                  # Production-built bundle (served by app.py)
+```
+
+---
+
+## Quick Start
+
+### 1. Prerequisites
+- **Python 3.10+**
+- (Optional) **Node.js 18+** (only needed if modifying the frontend source)
+- (Optional) **Google Gemini API Key** (system includes deterministic fallback)
+
+### 2. Clone the Repository
+```bash
+git clone https://github.com/DHARANIVIP/Ledgerwatch.git
+cd Ledgerwatch
+```
+
+### 3. Install Python Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment (Optional)
+Set your Gemini API key if you want AI-generated narratives:
+
+**PowerShell (Windows):**
+```powershell
+$env:GEMINI_API_KEY = "your_gemini_api_key_here"
+```
+
+**Bash (Linux / macOS):**
+```bash
+export GEMINI_API_KEY="your_gemini_api_key_here"
+```
+
+**Command Prompt (Windows):**
+```cmd
+set GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 5. Launch LedgerWatch
+Run the single start command:
+```bash
+python app.py
+```
+
+- **Web Dashboard:** [http://localhost:8000](http://localhost:8000)
+- **Interactive Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- **System Health:** [http://localhost:8000/api/health](http://localhost:8000/api/health)
+- **Database Stats:** [http://localhost:8000/api/db/stats](http://localhost:8000/api/db/stats)
+
+> **Zero extra steps:** `app.py` automatically checks if the SQLite database is initialized, provisions tables, seeds from the customer CSVs, and serves both the backend API and the compiled React UI on port 8000.
+
+---
+
+## Detection Rules Engine
+
+LedgerWatch enforces 4 deterministic detection rules that evaluate behavioral anomalies without relying on stochastic LLMs:
+
+| Rule Name | Trigger Condition | Severity Impact |
+|-----------|-------------------|-----------------|
+| `rule_large_transfer` | Transaction amount > $\mu + 3\sigma$ of customer's historical baseline | High (Scaled by $Z$-score magnitude) |
+| `rule_burst_new_payee` | $\ge 3$ transactions within 7 days to a payee first seen $\le 14$ days ago | High (Detects rapid fund drainage) |
+| `rule_odd_hours` | Transaction initiated outside the customer's 95% active diurnal time window | Medium (Isolated off-hours access) |
+| `rule_pattern_break` | Rolling 7-day velocity/volume shifts $> 2.5\times$ relative to baseline | Critical (Structural account hijacking signal) |
+
+---
+
+## Customer Datasets
+
+LedgerWatch includes synthetic customer datasets in `data/customers/` representing distinct risk scenarios:
+
+| Customer | Scenario & Behavioral Profile | Expected Verdict | Primary Flagged Behavior |
+|----------|-------------------------------|------------------|--------------------------|
+| **Customer A** | Baseline Routine Profile | `nothing_flagged` | Consistent ticket sizes, daytime activity, recognized payees |
+| **Customer B** | Rapid Fund Drainage | `attention_needed` | Multiple rapid transfers to an unseen payee + 03:20 AM transaction + amount $> \mu + 3\sigma$ |
+| **Customer C** | Borderline Anomaly | `attention_needed` | Single isolated 02:45 AM transaction with otherwise routine behavior |
+| **Customer D** | Structural Pattern Shift | `attention_needed` | Sudden transition from small UPI transactions to high-velocity netbanking transfers |
+
+---
+
+## REST API Reference
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/customers` | Returns all customer profiles from the database |
+| `GET` | `/api/investigate/{customer_id}` | Runs the complete risk pipeline and returns structured findings |
+| `GET` | `/api/transactions/{customer_id}` | Returns all transaction rows for audit verification |
+| `GET` | `/api/transactions/{customer_id}/{txn_id}` | Returns details of a specific transaction for modal drill-down |
+| `GET` | `/api/health` | Health check reporting database status and Gemini configuration |
+| `GET` | `/api/db/stats` | Returns real-time row counts across all database tables |
+
+### Sample Response: `/api/investigate/customer_B`
+
+```json
+{
   "customer_id": "customer_B",
   "verdict": "attention_needed",
-  "summary": "Multiple behavioral deviations detected including rapid transfers to a novel payee.",
   "findings": [
     {
-      "finding_id": "FND-001",
-      "rule_name": "RULE_BURST_NEW_PAYEE",
-      "severity_score": 85,
-      "transaction_ids": ["TXN-9021", "TXN-9022", "TXN-9025"],
-      "observed_metric": "3 transactions within 48h to payee added 2 days ago",
-      "baseline_metric": "0 prior transfers to this payee in historical profile",
-      "investigator_guidance": "Verify recipient account authenticity and confirm customer channel authentication factors."
+      "finding_id": "F001",
+      "rule": "rule_burst_new_payee",
+      "severity": 87,
+      "transactions": ["TXN-0042", "TXN-0043", "TXN-0044"],
+      "observed": "4 transactions in 3 days to new payee",
+      "baseline": "avg 1.2 transactions/week per payee",
+      "narrative": "Between Sep 12 and Sep 15, 4 successive transfers were initiated to an unfamiliar counterparty...",
+      "action_tip": "Verify payee identity and confirm multi-factor authorization."
     }
   ],
   "disclaimer": "This is a flag-and-explain report for human investigator review — it does not determine wrongdoing."
 }
-3. Audit Underlying RecordsHTTPGET /api/transactions/{customer_id}
-Returns raw row-level records mapped directly to customer transaction entries for complete audit traceability.Compliance & Output Safety StandardsTraceability: Every transaction identifier listed in any generated report is strictly bound to real rows in data/customers/*.csv.Defensible Baseline: Insufficient history profiles (< 14 calendar days or < 15 transactions) reject baseline construction explicitly without guess-estimates.Regulatory Tone: No outputs label, infer, or determine guilt or wrongdoing. Every finding serves as a decision-support aid for human fraud operations specialists.
+```
+
+---
+
+## Safety, Compliance & Tone Guardrails
+
+To comply with financial regulatory standards (e.g., Fair Lending, Adverse Action rules, and operational ethics):
+
+1. **Non-Accusatory Tone:** LLM output passes through an automated regex sanitizer in `server/narrate.py` that intercepts terms like `fraud`, `fraudulent`, `theft`, `criminal`, `scam`, and `stolen`, replacing them with neutral terminology such as **"flagged activity"** or **"unusual pattern"**.
+2. **Decision-Support Focus:** Every investigation report concludes with an immutable compliance disclaimer:
+   > *"This is a flag-and-explain report for human investigator review — it does not determine wrongdoing."*
+3. **Data Minimization & Privacy:** Reports reference internal `transaction_id` references rather than raw PII.
+4. **Deterministic Integrity:** The risk verdict (`attention_needed` vs. `nothing_flagged`) is strictly locked to Python rule outputs—the LLM is never permitted to set or modify risk verdicts.
+
+---
+
+## Supabase / PostgreSQL Support
+
+LedgerWatch provides enterprise PostgreSQL support via `supabase/schema.sql`:
+- Complete relational schema: `customers`, `transactions`, `findings`, and `investigations` audit tables.
+- Row-Level Security (RLS) policies for secure investigator tenant isolation.
+- B-tree and composite indexing for sub-millisecond query execution.
+
+Apply schema to your database:
+```bash
+psql -h db.your-project.supabase.co -U postgres -d postgres -f supabase/schema.sql
+```
+
+---
+
+## Frontend Development
+
+The frontend is built with React 18, Vite, and Tailwind CSS. The compiled production bundle is pre-built in `client/dist` and served automatically by FastAPI.
+
+To make frontend modifications:
+```bash
+cd client
+npm install
+npm run dev      # Starts Vite dev server with Hot Module Replacement on :5173
+npm run build    # Compiles production assets directly into client/dist/
+```
+
+---
+
+## License
+
+This project is developed for the Transaction Risk Investigation Assistant (Track PS06) challenge.
